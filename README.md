@@ -1,34 +1,64 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Pageturner
 
-## Getting Started
+## Objetivo
+O objetivo principal é criar um site para organização de leitura utilizando o acervo de livros da API pública do Google, que fornece uma gama de livros e com todas as informações necessárias. Sendo desenvolvido em React, Next e Ruby on Rails, qualquer usuário que tenha acesso a internet, independente da plataforma, e que possa utilizar um website terá como utilizar.  
+  
+O foco do website é auxiliar o usuário a organizar suas leituras independentemente da maneira que foi lido, sendo em um PDF, áudio-book, Kindle ou até um livro físico. Com a utilização da API pública do Google fornecendo os dados dos livros, o usuário poderá pesquisar o livro que deseja e cadastrá-lo na categoria que desejar, sendo elas: Já lido, Lendo e Pretendo ler. Além disso, ele poderá dar uma nota a sua leitura e ainda escrever um review sobre. Caso a leitura ainda esteja em progresso, ele poderá inserir em qual página a sua leitura parou para então ver o seu progresso e ir atualizando-o com o tempo. Como todos esses dados serão salvos a partir do seu login com a conta do Google, o usuário poderá acessar em qualquer dispositivo estando logado na sua conta para visualizar suas informações ou até fazer atualizações.
 
-First, run the development server:
+## Escopo
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+**1. Coleta de dados:**
+- Será coletado dados dos livros a partir da Google Books API e também dados básicos do usuário a partir do cadastro pelo Google.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**2. Pré-processamento e Análise:**
+- Ao receber os dados da API do Google Books, eles serão processados e limpos para que seja enviado para o front-end somente o que será utilizado.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**3. Design de Interface:**
+- Criação de um layout no Figma de todas as telas do site de maneira responsiva e seguindo as boas práticas de User Experience e User Interface.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+**4. Desenvolvimento:**
+- Será desenvolvido as telas na parte do front-end em React, Typescript e Next, e para o back-end será desenvolvido a API em Ruby on Rails para que capture os dados da API pública do Google Books e que seja feito todas as funções necessárias para apresentar.
 
-## Learn More
+**5. Qualidade:**
+- Implementação de testes unitários tanto no back-end quanto no front-end do projeto, tendo uma grande cobertura de testes para garantir o funcionamento do sistema. Além disso será implementado o SonarQube para garantir que o código esteja de boa qualidade.
 
-To learn more about Next.js, take a look at the following resources:
+**6. CI/CD:**
+- Implementação de Continuous Integration e Continuous Delivery pela plataforma do Vercel e pelo próprio Github.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**7. Observabilidade:**
+- Aplicação de softwares para monitoramento como o NewRelic.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+## Contexto
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+O Pageturner é uma solução desenvolvida para fornecer uma melhora na organização de leituras de maneira intuitiva e podendo ser utilizado em qualquer dispositivo que tenha acesso a internet.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Restrições
+
+Custo para manter o sistema no ar caso tenha muitas requisições.
+
+## Trade-offs
+
+- **Portabilidade:**
+Será mantido uma aparência uniforme em todos os dispositivos, garantindo uma experiência reconhecível, porém pode limitar a adaptação a diferentes tamanhos de tela.
+- **Funcionalidade:**
+O Sistema irá manter a interface e as funcionalidades simples e fáceis de usar, atraindo um público que valoriza a facilidade de navegação, mas pode não atender às necessidades de usuários que procuram recursos mais avançados.
+- **Confiabilidade:**
+Temos uma confiabilidade das informações dos livros a partir dos dados que a API do Google Books nos traz. Caso seja necessário comprovar que todos os dados estejam corretos, teria que utilizar mais de uma requisição que compare as informações, porém isso pode impactar na velocidade de resposta.
+- **Usabilidade:**
+A usabilidade do sistema será algo intuitivo e direto, para que facilite a organização de leituras para o usuário, tendo também responsividade para outros dispositivos.
+- **Eficiência:**
+Terá como prioridade o carregamento rápido para que possa mostrar a página inicial o mais rápido possível, mas pode resultar em placeholders ou conteúdo faltando até que todos os recursos sejam carregados. É ótimo para causar uma boa primeira impressão, mas pode atrasar a exibição de informações completas.
+- **Manutenibilidade:**
+O sistema é considerado relativamente simples, o que pode aumentar o nível de manutenibilidade seria caso houvesse muitas requisições em um curto período de tempo, tendo que talvez começar a pagar algum serviço que sustente sem problemas.
+
+## C4 Model
+
+Os diagramas feitos de acordo com o modelo C4 de documentação podem ser encontrados [aqui.](/docs/c4-models.md)
+
+
+## Requisitos e Casos de uso
+
+Os requisitos funcionais, não funcionais e os casos de uso podem ser encontrados [aqui.](/docs/requirements-and-use-cases.md)
+
+
