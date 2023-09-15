@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Merriweather } from "next/font/google";
 import { Providers } from "./providers";
 import { Analytics } from '@vercel/analytics/react';
+import { HighlightInit } from "@highlight-run/next/client";
 
 
 const merriweather = Merriweather({
@@ -21,6 +22,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
+    <>
+    <HighlightInit 
+      projectId="ve6p6rgp"
+      serviceName="my-nextjs-frontend"
+      tracingOrigins
+      networkRecording={{
+        enabled: true,
+        recordHeadersAndBody: true,
+        urlBlocklist: []
+      }}
+    />
     <html lang="en">
       <body className={merriweather.className}>
         <Providers>
@@ -29,5 +41,6 @@ export default function RootLayout({
         <Analytics />
       </body>
     </html>
+    </>
   );
 }
