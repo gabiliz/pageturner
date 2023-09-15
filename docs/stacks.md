@@ -1,4 +1,5 @@
 ## Stacks
+
 - [Ruby](https://www.ruby-lang.org/en/) (3.2.2)
 - [Rails](https://rubyonrails.org/) (7.0.7)
 - [React](https://react.dev/) (18.2.0)
