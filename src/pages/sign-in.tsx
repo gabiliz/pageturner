@@ -27,7 +27,7 @@ export default function SignIn () {
           </p>
           <Button
             className="bg-ptsecondary rounded-[45px] text-ptprimary-900 text-base p-8 lg:text-2xl lg:p-10"
-            onClick={() => signIn("google")}
+            onClick={() => void signIn("google")}
           >
             Continuar com Google
           </Button>

@@ -14,7 +14,7 @@ export default function Header() {
   return (
     <main>
       <div className="flex items-center justify-around py-3">
-        <a className="text-ptsecondary font-semibold text-xl" href="/">Pageturner</a>
+        <Link className="text-ptsecondary font-semibold text-xl" href="/">Pageturner</Link>
         <div className="w-6/12">
           <Input
             type="text"
@@ -26,7 +26,7 @@ export default function Header() {
             <DropdownMenuTrigger>
               <div className="flex items-center">
                 <Avatar>
-                  <AvatarImage src={sessionData?.user.image || "https://github.com/shadcn.png"} alt={sessionData?.user.name || "user"} />
+                  <AvatarImage src={sessionData?.user.image ?? "https://github.com/shadcn.png"} alt={sessionData?.user.name ?? "user"} />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
                 <p className="ml-4">
@@ -38,11 +38,11 @@ export default function Header() {
             <DropdownMenuContent>
               <DropdownMenuItem><Link href='/profile'>Perfil</Link></DropdownMenuItem>
               <DropdownMenuItem>Configurações</DropdownMenuItem>
-              <DropdownMenuItem><a onClick={() => signOut()}>Sair</a></DropdownMenuItem>
+              <DropdownMenuItem><a onClick={() => void signOut()}>Sair</a></DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         : 
-          <Button onClick={() => signIn("google")}>Sign In</Button>
+          <Button onClick={() => void signIn("google")}>Sign In</Button>
         }
       </div>
     </main>
