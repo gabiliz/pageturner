@@ -14,15 +14,6 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Example {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    @@index([name])
-}
-
 // Necessary for Next auth
 model Account {
     id                String  @id @default(cuid())
@@ -58,9 +49,11 @@ model User {
     image         String?
     pronouns      String?
     birthday      DateTime?
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime? @updatedAt
     accounts      Account[]
     sessions      Session[]
-    lists         List[]
+    lists         UserList[]
     log           Log[]
 }
 
@@ -76,7 +69,8 @@ model Book {
     id            String    @id @default(cuid())
     isbn13        Int?
     isbn10        Int?
-    lists         List[]
+    listId        String
+    list          List      @relation(fields: [listId], references: [id], onDelete: Cascade)
     log           Log[]
 }
 
@@ -84,7 +78,7 @@ model List {
     id            String    @id @default(cuid())
     name          String?
     books         Book[]
-    users         User[]
+    users         UserList[]
 }
 
 model Log {
@@ -95,4 +89,13 @@ model Log {
     userId        String
     user          User    @relation(fields: [userId], references: [id], onDelete: Cascade)
     book          Book    @relation(fields: [bookId], references: [id], onDelete: Cascade)
+}
+
+model UserList {
+    listId        String
+    userId        String
+    user          User    @relation(fields: [userId], references: [id])
+    list          List    @relation(fields: [listId], references: [id])
+
+    @@id([listId, userId])
 }

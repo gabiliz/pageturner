@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { useSession } from "next-auth/react";
 import Header from "~/components/Header";
 import { Avatar, AvatarImage } from "~/components/ui/avatar";
@@ -13,9 +14,23 @@ import {
 } from "~/components/ui/dialog";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
+import { api } from "~/utils/api";
+import { formatAge, formatBirthday, formatCreatedUserDate } from "~/utils/dateFormat";
 
 export default function Profile() {
   const { data: sessionData } = useSession();
+
+  const userData = api.user.getById.useQuery({
+    id: "clngynn8p00041o7ve1y4urd4",
+  });
 
   return (
     <div className="h-screen bg-ptprimary-500">
@@ -51,7 +66,7 @@ export default function Profile() {
                     </Label>
                     <Input
                       id="name"
-                      defaultValue={sessionData?.user.name ?? ''}
+                      defaultValue={sessionData?.user.name ?? ""}
                       className="col-span-3"
                     />
                   </div>
@@ -59,10 +74,32 @@ export default function Profile() {
                     <Label htmlFor="name" className="text-right">
                       Pronomes
                     </Label>
-                    <Input
-                      id="pronouns"
-                      className="col-span-3"
-                    />
+                    <Input id="pronouns" className="col-span-3" />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="name" className="text-right">
+                      Aniversário
+                    </Label>
+                    <Input type="date" className="col-span-3" />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="name" className="text-right">
+                      Gêneros
+                    </Label>
+                    <Select>
+                      <SelectTrigger className="w-[277px]">
+                        <SelectValue placeholder="Selecione uma lista" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value="apple">Lido</SelectItem>
+                          <SelectItem value="banana">Lendo</SelectItem>
+                          <SelectItem value="blueberry">
+                            Pretendo ler
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
                 <DialogFooter>
@@ -88,14 +125,14 @@ export default function Profile() {
           <h2 className="mr-36 text-xl font-semibold text-ptsecondary">
             Detalhes
           </h2>
-          <p className="text-lg text-ptsecondary">21 anos, Ela/Dela</p>
+          <p className="text-lg text-ptsecondary">{formatAge(userData.data?.birthday)}, Ela/Dela</p>
         </div>
         <div className="my-8 h-[3px] w-[800px] bg-ptprimary-900"></div>
         <div className="flex items-center">
           <h2 className="mr-28 text-xl font-semibold text-ptsecondary">
             Aniversário
           </h2>
-          <p className="text-lg text-ptsecondary">15 de Fevereiro</p>
+          <p className="text-lg text-ptsecondary">{formatBirthday(userData.data?.birthday)}</p>
         </div>
         <div className="my-8 h-[3px] w-[800px] bg-ptprimary-900"></div>
         <div className="flex items-center">
@@ -111,7 +148,7 @@ export default function Profile() {
           <h2 className="mr-36 text-xl font-semibold text-ptsecondary">
             Atividade
           </h2>
-          <p className="text-lg text-ptsecondary">Entrou em Agosto de 2023</p>
+          <p className="text-lg text-ptsecondary">{formatCreatedUserDate(userData.data?.createdAt)}</p>
         </div>
       </div>
     </div>

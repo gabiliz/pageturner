@@ -1,8 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import { ChevronLeftIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
-import BookCard from "~/components/BookCard";
 import Header from "~/components/Header";
 import { Button } from "~/components/ui/button";
 import {
@@ -25,11 +25,11 @@ import {
 } from "~/components/ui/select";
 
 export default function Book() {
-  const router = useRouter()
+  const router = useRouter();
 
   const returnToLastPage = () => {
     router.back();
-  }
+  };
 
   return (
     <>
@@ -42,7 +42,13 @@ export default function Book() {
         </div>
         <div className="flex p-16">
           <div>
-            <BookCard isProgress={false} isNotOnBookPage={false} />
+            <Image
+              className="rounded-md"
+              src="https://edit.org/images/cat/book-covers-big-2019101610.jpg"
+              width={250}
+              height={500}
+              alt={""}
+            />
             <div className="flex flex-col items-center mt-8">
               <Dialog>
                 <DialogTrigger asChild>
@@ -51,9 +57,7 @@ export default function Book() {
                 <DialogContent className="sm:max-w-[425px]">
                   <DialogHeader>
                     <DialogTitle>Edit profile</DialogTitle>
-                    <DialogDescription>
-                      Edição
-                    </DialogDescription>
+                    <DialogDescription>Edição</DialogDescription>
                   </DialogHeader>
                   <div className="grid gap-4 py-4">
                     <div className="grid grid-cols-4 items-center gap-4">
@@ -121,7 +125,9 @@ export default function Book() {
             <div>
               <p className="font-bold text-ptsecondary">Sobre o livro</p>
               <div className="w-96 h-24 rounded-lg bg-ptprimary-900">
-                <p className="text-ptsecondary">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</p>
+                <p className="text-ptsecondary">
+                  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                </p>
               </div>
             </div>
             <div>
