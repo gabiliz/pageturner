@@ -24,9 +24,20 @@ export const userRouter = createTRPCRouter({
       return user;
     }),
 
-  // update: publicProcedure
-  //   .input(z.object({
-      
-  //   }))
-  //   .mutation({})
+  update: publicProcedure
+    .input(z.object({
+      id: z.string(),
+      name: z.string(),
+
+    }))
+    .mutation(async ({ input }) => {
+      await db.user.update({
+        where: {
+          id: input.id
+        },
+        data: {
+          name: input.name
+        }
+      })
+    })
 });

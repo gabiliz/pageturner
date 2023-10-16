@@ -18,7 +18,7 @@ const config = {
     defaultLocale: "en",
   },
   images: {
-    domains: ['example.com', 'edit.org', 'i.pravatar.cc'],
+    domains: ['example.com', 'edit.org', 'i.pravatar.cc', 'books.google.com'],
   },
 };
 

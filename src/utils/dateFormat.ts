@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { pt } from "date-fns/locale";
 
 export function formatBirthday (birthday: Date | undefined | null) {
@@ -29,6 +29,17 @@ export function formatAge(birthday: Date | undefined | null) {
     const age = todayDate.getFullYear() - birthday.getFullYear()
 
     return `${age} anos`
+  }
+
+  return '';
+}
+
+export function formatPublishedDate(publishedDate: string) {
+  if (publishedDate) {
+    const date = parseISO(publishedDate);
+    const formatedDate = format(date, "d 'de' MMMM 'de' yyyy", { locale: pt });
+
+    return formatedDate
   }
 
   return '';

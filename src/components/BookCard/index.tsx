@@ -18,9 +18,11 @@ export default function BookCard({
           <Image
             className="relative z-40 rounded-md"
             src="https://edit.org/images/cat/book-covers-big-2019101610.jpg"
-            width={250}
-            height={500}
+            width={0}
+            height={0}
+            sizes="100vw"
             alt={""}
+            style={{ width: '70%', height: 'auto' }}
           />
         </div>
         {isNotOnBookPage ? (

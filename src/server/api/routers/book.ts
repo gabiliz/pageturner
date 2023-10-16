@@ -1,25 +1,35 @@
 import { z } from "zod";
+import { env } from "~/env.mjs";
 
 import {
   createTRPCRouter,
-  protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
 
+const googleBooksApiUrl = "https://www.googleapis.com/books/v1/volumes?q="
+const apiKey = env.GOOGLE_BOOKS_API
+
 export const bookRouter = createTRPCRouter({
-  hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
-      return {
-        greeting: `Hello ${input.text}`,
-      };
-    }),
 
   getAll: publicProcedure.query(({ ctx }) => {
     return ctx.db.book.findMany();
   }),
 
-  getSecretMessage: protectedProcedure.query(() => {
-    return "you can now see this secret message!";
-  }),
+  searchBook: publicProcedure
+    .input(z.object({
+      bookName: z.string().describe(`Nome do livro`)
+    }))
+    .query(async ({ input }) => {
+      const bookRes = await fetch(`${googleBooksApiUrl}${input.bookName}&key=${apiKey}`) 
+      return bookRes.json()
+    }),
+
+  getBook: publicProcedure
+    .input(z.object({
+      isbn13: z.string().describe(`ISBN 13 do livro`)
+    }))
+    .query(async ({ input }) => {
+      const bookRes = await fetch(`${googleBooksApiUrl}isbn:${input.isbn13}&key=${apiKey}`) 
+      return bookRes.json()
+    })
 });
