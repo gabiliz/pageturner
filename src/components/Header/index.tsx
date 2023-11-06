@@ -1,6 +1,6 @@
 "use client";
 
-import { Bars3Icon, ChevronDownIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Input } from "../ui/input";
 import {
   DropdownMenu,
@@ -12,7 +12,6 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { api } from "~/utils/api";
 import React, { ChangeEvent, useState } from "react";
 import { useRouter } from "next/router";
 
@@ -22,9 +21,6 @@ export default function Header() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { data: sessionData } = useSession();
-  // const bookData = api.book.searchBook.useQuery({
-  //   bookName: bookName,
-  // });
 
   const toggleSidebar = () => {
     setIsSidebarOpen((prevState) => !prevState);

@@ -16,10 +16,10 @@ export default function Categories () {
           Horror
         </h1>
         <div className="grid grid-flow-col gap-24">
-          <BookCard isProgress={false} isNotOnBookPage={true} />
-          <BookCard isProgress={false} isNotOnBookPage={true} />
-          <BookCard isProgress={false} isNotOnBookPage={true} />
-          <BookCard isProgress={false} isNotOnBookPage={true} />
+          <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
+          <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
+          <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
+          <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
         </div>
       </div>
       <div>
@@ -27,10 +27,10 @@ export default function Categories () {
           Fantasia
         </h1>
         <div className="grid grid-flow-col gap-24">
-          <BookCard isProgress={false} isNotOnBookPage={true} />
-          <BookCard isProgress={false} isNotOnBookPage={true} />
-          <BookCard isProgress={false} isNotOnBookPage={true} />
-          <BookCard isProgress={false} isNotOnBookPage={true} />
+          <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
+          <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
+          <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
+          <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
         </div>
       </div>
       <div>
@@ -38,10 +38,10 @@ export default function Categories () {
           Romance
         </h1>
         <div className="grid grid-flow-col gap-24">
-          <BookCard isProgress={false} isNotOnBookPage={true} />
-          <BookCard isProgress={false} isNotOnBookPage={true} />
-          <BookCard isProgress={false} isNotOnBookPage={true} />
-          <BookCard isProgress={false} isNotOnBookPage={true} />
+          <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
+          <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
+          <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
+          <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
         </div>
       </div>
     </div>

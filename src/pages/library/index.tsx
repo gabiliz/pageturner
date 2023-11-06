@@ -23,10 +23,10 @@ export default function Library() {
               Lidos
             </h1>
             <div className="grid grid-flow-col gap-24">
-              <BookCard isProgress={false} isNotOnBookPage={true} />
-              <BookCard isProgress={false} isNotOnBookPage={true} />
-              <BookCard isProgress={false} isNotOnBookPage={true} />
-              <BookCard isProgress={false} isNotOnBookPage={true} />
+              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
+              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
+              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
+              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
             </div>
           </div>
           <div>
@@ -34,10 +34,10 @@ export default function Library() {
               Lendo
             </h1>
             <div className="grid grid-flow-col gap-24">
-              <BookCard isProgress={false} isNotOnBookPage={true} />
-              <BookCard isProgress={false} isNotOnBookPage={true} />
-              <BookCard isProgress={false} isNotOnBookPage={true} />
-              <BookCard isProgress={false} isNotOnBookPage={true} />
+              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
+              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
+              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
+              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
             </div>
           </div>
           <div>
@@ -45,10 +45,10 @@ export default function Library() {
               Pretendo ler
             </h1>
             <div className="grid grid-flow-col gap-24">
-              <BookCard isProgress={false} isNotOnBookPage={true} />
-              <BookCard isProgress={false} isNotOnBookPage={true} />
-              <BookCard isProgress={false} isNotOnBookPage={true} />
-              <BookCard isProgress={false} isNotOnBookPage={true} />
+              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
+              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
+              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
+              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
             </div>
           </div>
         </div>

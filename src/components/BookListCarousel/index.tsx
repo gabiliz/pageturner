@@ -40,7 +40,7 @@ export default function BookListCarousel ({books}: BookCarouselProps) {
             animate={controls}
             transition={{ duration: 0.5 }}
           >
-            <BookCard isProgress={false} isRating={false} isRatingWithReview={false} />
+            <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
           </motion.div>
         ))}
       </div>

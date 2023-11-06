@@ -15,9 +15,9 @@ export default function Home() {
               Novos <div className="bg-pttertiary w-fit p-3">Lançamentos</div>
             </h1>
             <CardCarousel>
-              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} />
-              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} />
-              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} />
+              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
+              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
+              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
             </CardCarousel>
           </div>
           <div>
@@ -25,10 +25,10 @@ export default function Home() {
               Bestsellers
             </h1>
             <div className="grid grid-flow-col gap-24">
-              <BookCard isProgress={true} isRating={false} isRatingWithReview={false} />
-              <BookCard isProgress={false} isRating={true} isRatingWithReview={false} />
-              <BookCard isProgress={false} isRating={false} isRatingWithReview={true} />
-              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} />
+              <BookCard isProgress={true} isRating={false} isRatingWithReview={false} bookImage={""} />
+              <BookCard isProgress={false} isRating={true} isRatingWithReview={false} bookImage={""} />
+              <BookCard isProgress={false} isRating={false} isRatingWithReview={true} bookImage={""} />
+              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
             </div>
           </div>
         </div>
