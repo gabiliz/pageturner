@@ -1,39 +1,52 @@
 import Image from "next/image";
-import { Progress } from "../ui/progress";
 import Link from "next/link";
+import { Rating } from "@mui/material";
+import { Progress } from "../ui/progress";
+import { Bars3BottomLeftIcon } from "@heroicons/react/24/outline";
 
 interface BookCardProps {
   isProgress: boolean;
-  isNotOnBookPage: boolean;
+  isRating: boolean;
+  isRatingWithReview: boolean;
+  bookName?: string;
+  bookAuthor?: string[];
+  bookImage: string;
+  isbn13?: string;
 }
 
 export default function BookCard({
   isProgress,
-  isNotOnBookPage,
+  isRating,
+  isRatingWithReview,
+  bookName,
+  bookAuthor,
+  bookImage,
+  isbn13
 }: BookCardProps) {
   return (
-    <div className="w-[250px]">
-      <Link href="/book">
-        <div className="relative">
-          <Image
-            className="relative z-40 rounded-md"
-            src="https://edit.org/images/cat/book-covers-big-2019101610.jpg"
-            width={0}
-            height={0}
-            sizes="100vw"
-            alt={""}
-            style={{ width: '70%', height: 'auto' }}
-          />
+    <div className="w-[200px] mb-10">
+      <Link href={`/book/${isbn13}`} passHref>
+        <Image
+          className="rounded-md"
+          src={bookImage}
+          width={0}
+          height={0}
+          sizes="100vw"
+          alt={""}
+          style={{ width: "100%", height: "auto" }}
+        />
+        <div className="relative flex flex-col pt-6">
+          <p className="font-bold text-ptsecondary">{bookName}</p>
+          <p className="text-ptsecondary">{bookAuthor?.join(', ')}</p>
         </div>
-        {isNotOnBookPage ? (
-          <div className="relative z-40 flex flex-col pt-6">
-            <p className="font-bold text-ptsecondary">Teias mortais</p>
-            <p className="text-ptsecondary">Bel Rodrigues</p>
-          </div>
+        {isProgress ? <Progress value={60} className="mt-2" /> : null}
+        {isRating ? (
+          <Rating defaultValue={2.5} precision={0.5} size="medium" readOnly />
         ) : null}
-        {isProgress ? (
-          <div>
-            <Progress value={65} />
+        {isRatingWithReview ? (
+          <div className="flex items-center">
+            <Rating defaultValue={2.5} precision={0.5} size="medium" readOnly />
+            <Bars3BottomLeftIcon width={20} height={20} className="ml-2" />
           </div>
         ) : null}
       </Link>

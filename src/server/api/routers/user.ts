@@ -27,8 +27,8 @@ export const userRouter = createTRPCRouter({
   update: publicProcedure
     .input(z.object({
       id: z.string(),
-      name: z.string(),
-
+      name: z.string().optional(),
+      pronouns: z.string().optional()
     }))
     .mutation(async ({ input }) => {
       await db.user.update({
@@ -36,7 +36,8 @@ export const userRouter = createTRPCRouter({
           id: input.id
         },
         data: {
-          name: input.name
+          name: input.name,
+          pronouns: input.pronouns,
         }
       })
     })

@@ -4,7 +4,7 @@ import Navbar from "~/components/Navbar";
 
 export default function Categories () {
   return (
-    <main className="h-full bg-ptprimary-500">
+    <main className="h-screen bg-ptprimary-500">
     <Header />
     <Navbar />
     <div className="px-24 pt-12">

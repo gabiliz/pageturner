@@ -13,16 +13,18 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { api } from "~/utils/api";
-import { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
+import { useRouter } from "next/router";
 
 export default function Header() {
-  const [bookName, setBookName] = useState("");
+  const router = useRouter();
+  const [searchBook, setSearchBook] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { data: sessionData } = useSession();
-  const bookData = api.book.searchBook.useQuery({
-    bookName: bookName,
-  });
+  // const bookData = api.book.searchBook.useQuery({
+  //   bookName: bookName,
+  // });
 
   const toggleSidebar = () => {
     setIsSidebarOpen((prevState) => !prevState);
@@ -30,6 +32,18 @@ export default function Header() {
 
   const handleChangeChevronIcon = () => {
     setIsDropdownOpen(isSidebarOpen);
+  }
+
+  const handleEnterPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      if(searchBook) {
+        void router.push(`/search?query=${searchBook}`);
+      }
+    }
+  }
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchBook(e.target.value);
   }
 
   return (
@@ -58,7 +72,10 @@ export default function Header() {
               <Input
                 type="text"
                 className="block w-full pr-10 text-sm"
+                value={searchBook}
                 placeholder="Pesquise por título, autor, editora, ISBN..."
+                onKeyDown={handleEnterPress}
+                onChange={handleInputChange}
               />
             </div>
           </div>

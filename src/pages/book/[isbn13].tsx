@@ -34,34 +34,50 @@ import { formatPublishedDate } from "~/utils/dateFormat";
 import { Rating } from "@mui/material";
 import { Progress } from "@nextui-org/react";
 import { Textarea } from "~/components/ui/textarea";
+import { ErrorPage } from "~/components/Error";
 
 export default function Book() {
   const router = useRouter();
-
+  const isbn13 = String(router.query.isbn13)
   const {
     data: bookData,
     isLoading,
     isError,
   } = api.book.getBook.useQuery({
-    isbn13: "9788576573999",
+    isbn13: isbn13
   });
 
-  const editThumbnailUrl = (url: string) => {
-    if (url) {
-      return url.replace("zoom=1", "zoom=0").replace("&edge=curl", "");
+  const editThumbnailUrl = (url: string | undefined) => {
+    const defaultThumbnail = 'https://via.placeholder.com/564x900'
+    if (url === undefined) {
+      return defaultThumbnail;
     }
-    return url;
+    return url.replace("zoom=1", "zoom=0").replace("&edge=curl", "");
   };
+
+  const configAuthors = (authors: string[]) => {
+    return authors.join(', ');
+  }
 
   const returnToLastPage = () => {
     router.back();
   };
 
+  const pageCount = (data: number) => {
+    return `120/${data}`
+  }
+
+  const pagePercentage = (data: number) => {
+    const readPercentage = (120 / data) * 100;
+    
+    return readPercentage
+  }
+
   return (
     <>
       <div className="h-screen bg-ptprimary-500">
         {isLoading && <LoadingPage />}
-        {isError && <div>Ocorreu um erro ao buscar os dados.</div>}
+        {isError && <ErrorPage />}
         {bookData && (
           <>
             <Header />
@@ -74,9 +90,9 @@ export default function Book() {
               <div>
                 <Image
                   className="rounded-md"
-                  src={editThumbnailUrl(
-                    bookData.items[0].volumeInfo.imageLinks.thumbnail,
-                  )}
+                  src={
+                    editThumbnailUrl(bookData.items[0].volumeInfo.imageLinks?.thumbnail ?? 'https://via.placeholder.com/564x900')
+                  }
                   width={280}
                   height={500}
                   alt={""}
@@ -90,12 +106,12 @@ export default function Book() {
                     readOnly
                   /> */}
                   <Progress
-                    className="mb-3"
+                    className="mb-6"
                     showValueLabel={true}
-                    label="120/240"
-                    size="sm"
+                    label={pageCount(bookData.items[0].volumeInfo.pageCount)}
+                    size="md"
                     aria-label="Loading..."
-                    value={50}
+                    value={pagePercentage(bookData.items[0].volumeInfo.pageCount)}
                     classNames={{
                       track: "bg-ptprimary-900",
                       indicator: "bg-ptsecondary",
@@ -118,7 +134,7 @@ export default function Book() {
                         <Image
                           className="rounded-md row-span-2"
                           src={editThumbnailUrl(
-                            bookData.items[0].volumeInfo.imageLinks.thumbnail,
+                            bookData.items[0].volumeInfo.imageLinks?.thumbnail ?? 'https://via.placeholder.com/564x900',
                           )}
                           width={150}
                           height={500}
@@ -165,7 +181,7 @@ export default function Book() {
                         </div>
                       </div>
                       <DialogFooter>
-                        <Button type="submit">Save changes</Button>
+                        <Button type="submit">Salvar</Button>
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>
@@ -195,7 +211,7 @@ export default function Book() {
                     Review
                   </p>
                   <div className="bg-ptprimary-900 rounded-lg py-5 px-7">
-                    <p className="text-ptsecondary">aaaaa</p>
+                    <p className="text-ptsecondary">que estranho é o fato de pessoas de sensibilidade e sentimentos honestos, que não tirariam vantagem de um homem que nasceu sem braços ou pernas ou olhos, não verem problema em maltratar um homem com pouca inteligência.</p>
                   </div>
                 </div>
               </div>
@@ -231,7 +247,7 @@ export default function Book() {
                   </p>
                   <div className="rounded-lg bg-ptprimary-900 py-5 px-7">
                     <p className="text-ptsecondary">
-                      {bookData.items[0].volumeInfo.authors}
+                      {configAuthors(bookData.items[0].volumeInfo.authors)}
                     </p>
                   </div>
                 </div>
