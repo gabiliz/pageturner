@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
@@ -32,6 +33,7 @@ import { useToast } from "~/components/ui/use-toast";
 import { useSession } from "next-auth/react";
 import { Form, Formik, FormikHelpers, FormikValues } from "formik";
 import { Transition, Dialog } from "@headlessui/react";
+import React from "react";
 
 interface logFormData {
   review: string;
@@ -54,7 +56,8 @@ export default function Book() {
   const id = String(router.query.id);
   const bookCreateMutation = api.book.create.useMutation();
   const bookEditMutation = api.book.update.useMutation();
-  
+  const utils = api.useContext()
+  const { data: listsData } = api.list.getAll.useQuery()
   const { data: userData } = api.user.getById.useQuery({
     id: sessionData?.user.id ?? "",
   });
@@ -156,7 +159,9 @@ export default function Book() {
         description: "Sua alteração foi salva com sucesso!",
       });
     }
-    setIsOpen(false);
+    if (savedBook) {
+      void utils.book.getBookById.fetch({id: savedBook.id})
+    }
   };
 
   // const handleSave = () => {
@@ -423,18 +428,18 @@ export default function Book() {
                               void props.setFieldValue('listId', value)
                               void props.submitForm()
                             }}
-                            value={props.values.listId}
+                            value={savedBook?.listId}
                           >
                             <SelectTrigger className="w-60">
                               <SelectValue placeholder="Selecione uma lista" />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectGroup>
-                                <SelectItem value='lido'>Lido</SelectItem>
-                                <SelectItem value='lendo'>Lendo</SelectItem>
-                                <SelectItem value='pretendo-ler'>
-                                  Pretendo ler
-                                </SelectItem>
+                                {listsData?.map((list) => (
+                                  <SelectItem key={list.id} value={list.id}>
+                                    {list.name}
+                                  </SelectItem>
+                                ))}
                               </SelectGroup>
                             </SelectContent>
                           </Select>

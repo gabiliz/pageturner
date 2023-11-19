@@ -1,12 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { useSession } from "next-auth/react";
 import BookCard from "~/components/BookCard";
-import BookListCarousel from "~/components/BookListCarousel";
 import Header from "~/components/Header";
 import { LoadingPage } from "~/components/Loading";
 import Navbar from "~/components/Navbar";
 import { UserSessionPage } from "~/components/UserSession";
 import { api } from "~/utils/api";
 import getThumbnailUrl from "~/utils/getThumbnailUrl";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination, Navigation } from 'swiper/modules';
+import "swiper/swiper-bundle.css";
 
 interface Book {
   id: string;
@@ -53,7 +56,7 @@ export default function Library() {
       {isLoading && <LoadingPage />}
       <Header />
       <Navbar />
-      {sessionData && readBooks ? (
+      {sessionData && readBooks && readingBooks && wantsToReadBooks ? (
         booksData?.length === 0 ? (
           <div className="flex flex-col items-center justify-center mt-32">
             <p className="font-bold text-6xl text-ptsecondary">
@@ -69,58 +72,88 @@ export default function Library() {
               <h1 className="mb-14 mt-24 text-6xl font-bold text-ptsecondary">
                 Lidos
               </h1>
-              <div className="grid grid-flow-col gap-24">
+              <Swiper
+                spaceBetween={10}
+                slidesPerView={4}
+                navigation
+                pagination={{ clickable: true }}
+                modules={[Pagination, Navigation]}
+                className="relative"
+              >
                 {readBooks?.map((book: Book) => (
-                  <BookCard
-                    key={book.id}
-                    id={book.id}
-                    bookName={book.volumeInfo.title}
-                    bookAuthor={book.volumeInfo.authors}
-                    bookImage={getThumbnailUrl(book)}
-                    isProgress={false}
-                    isRating={false}
-                    isRatingWithReview={false}
-                  />
+                  <SwiperSlide key={book.id}>
+                    <div className="ml-20">
+                      <BookCard
+                        id={book.id}
+                        bookName={book.volumeInfo.title}
+                        bookAuthor={book.volumeInfo.authors}
+                        bookImage={getThumbnailUrl(book)}
+                        isProgress={false}
+                        isRating={false}
+                        isRatingWithReview={false}
+                      />
+                    </div>
+                  </SwiperSlide>
                 ))}
-              </div>
+              </Swiper>
             </div>
             <div>
               <h1 className="mb-14 mt-24 text-6xl font-bold text-ptsecondary">
                 Lendo
               </h1>
-              <div className="grid grid-flow-col gap-24">
+              <Swiper
+                spaceBetween={10}
+                slidesPerView={4}
+                navigation
+                pagination={{ clickable: true }}
+                modules={[Pagination, Navigation]}
+                className="relative"
+              >
                 {readingBooks?.map((book: Book) => (
-                  <BookCard
-                    key={book.id}
-                    id={book.id}
-                    bookName={book.volumeInfo.title}
-                    bookAuthor={book.volumeInfo.authors}
-                    bookImage={getThumbnailUrl(book)}
-                    isProgress={false}
-                    isRating={false}
-                    isRatingWithReview={false}
-                  />
+                  <SwiperSlide key={book.id}>
+                    <div className="ml-20">
+                      <BookCard
+                        id={book.id}
+                        bookName={book.volumeInfo.title}
+                        bookAuthor={book.volumeInfo.authors}
+                        bookImage={getThumbnailUrl(book)}
+                        isProgress={false}
+                        isRating={false}
+                        isRatingWithReview={false}
+                      />
+                    </div>
+                  </SwiperSlide>
                 ))}
-              </div>
+              </Swiper>
             </div>
             <div>
               <h1 className="mb-14 mt-24 text-6xl font-bold text-ptsecondary">
                 Pretendo ler
               </h1>
-              <div className="grid grid-flow-col gap-24">
+              <Swiper
+                spaceBetween={10}
+                slidesPerView={4}
+                navigation
+                pagination={{ clickable: true }}
+                modules={[Pagination, Navigation]}
+                className="relative"
+              >
                 {wantsToReadBooks?.map((book: Book) => (
-                  <BookCard
-                    key={book.id}
-                    id={book.id}
-                    bookName={book.volumeInfo.title}
-                    bookAuthor={book.volumeInfo.authors}
-                    bookImage={getThumbnailUrl(book)}
-                    isProgress={false}
-                    isRating={false}
-                    isRatingWithReview={false}
-                  />
+                  <SwiperSlide key={book.id}>
+                    <div className="ml-20">
+                      <BookCard
+                        id={book.id}
+                        bookName={book.volumeInfo.title}
+                        bookAuthor={book.volumeInfo.authors}
+                        bookImage={getThumbnailUrl(book)}
+                        isProgress={false}
+                        isRating={false}
+                        isRatingWithReview={false}
+                      />
+                    </div>
+                  </SwiperSlide>
                 ))}
-              </div>
+              </Swiper>
             </div>
           </div>
         )
