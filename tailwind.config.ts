@@ -8,7 +8,8 @@ module.exports = {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
-    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}"
+    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/tailwind-datepicker-react/dist/**/*.{js,ts,jsx,tsx}",
 	],
   theme: {
     container: {

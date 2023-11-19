@@ -16,6 +16,7 @@ interface Book {
 }
 
 export const getIsbn13 = (book: Book) => {
-  const isbn13Obj = book.volumeInfo.industryIdentifiers.find(id => id.type === 'ISBN_13');
-  return isbn13Obj?.identifier
+  const industryIdentifiers = book.volumeInfo.industryIdentifiers;
+    const isbn13Obj = industryIdentifiers.find(id => id.type === 'ISBN_13');
+    return isbn13Obj?.identifier;
 }

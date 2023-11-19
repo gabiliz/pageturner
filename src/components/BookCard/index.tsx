@@ -11,7 +11,9 @@ interface BookCardProps {
   bookName?: string;
   bookAuthor?: string[];
   bookImage: string;
-  isbn13?: string;
+  id?: string;
+  ratingValue?: number;
+  progressValue?: number;
 }
 
 export default function BookCard({
@@ -21,11 +23,13 @@ export default function BookCard({
   bookName,
   bookAuthor,
   bookImage,
-  isbn13
+  id,
+  ratingValue,
+  progressValue
 }: BookCardProps) {
   return (
     <div className="w-[200px] mb-10">
-      <Link href={`/book/${isbn13}`} passHref>
+      <Link href={`/book/${id}`} passHref>
         <Image
           className="rounded-md"
           src={bookImage}
@@ -39,13 +43,13 @@ export default function BookCard({
           <p className="font-bold text-ptsecondary">{bookName}</p>
           <p className="text-ptsecondary">{bookAuthor?.join(', ')}</p>
         </div>
-        {isProgress ? <Progress value={60} className="mt-2" /> : null}
+        {isProgress ? <Progress value={progressValue} className="mt-2" /> : null}
         {isRating ? (
-          <Rating defaultValue={2.5} precision={0.5} size="medium" readOnly />
+          <Rating value={ratingValue} precision={0.5} size="medium" readOnly />
         ) : null}
         {isRatingWithReview ? (
           <div className="flex items-center">
-            <Rating defaultValue={2.5} precision={0.5} size="medium" readOnly />
+            <Rating value={ratingValue} precision={0.5} size="medium" readOnly />
             <Bars3BottomLeftIcon width={20} height={20} className="ml-2" />
           </div>
         ) : null}

@@ -89,16 +89,15 @@ export default function Header() {
                     />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
-                  <p className="ml-4">{sessionData?.user?.name}</p>
+                  <p className="ml-4 text-ptsecondary">{sessionData?.user?.name}</p>
                 </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem>
-                  <Link href="/profile">Perfil</Link>
+                  <Link className="text-ptsecondary" href="/profile">Perfil</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>Configurações</DropdownMenuItem>
                 <DropdownMenuItem>
-                  <a onClick={() => void signOut()}>Sair</a>
+                  <a className="cursor-pointer text-ptsecondary hover:text-red-500" onClick={() => void signOut()}>Sair</a>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

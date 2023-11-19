@@ -10,7 +10,6 @@ import Header from "~/components/Header";
 import { LoadingPage } from "~/components/Loading";
 import Navbar from "~/components/Navbar";
 import { api } from "~/utils/api";
-import { getIsbn13 } from "~/utils/getIsbn13";
 import getThumbnailUrl from "~/utils/getThumbnailUrl";
 
 interface Book {
@@ -50,7 +49,9 @@ export default function Search () {
   const totalPages = Math.ceil(totalBooks / maxResults);
 
   if (isLoading) {
-    return <LoadingPage />;
+    return (
+      <LoadingPage />
+    )
   }
 
   if (isError) {
@@ -64,13 +65,13 @@ export default function Search () {
       <div className="h-full bg-ptprimary-500">
         <Header />
         <Navbar />
-        <div className="flex justify-center items-center h-screen">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mx-auto mt-36">
+        <div className="flex justify-center items-center h-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mx-auto my-16">
             {booksArray
             .map((book: Book) => (
               <BookCard
                 key={book.id}
-                isbn13={getIsbn13(book)}
+                id={book.id}
                 bookName={book.volumeInfo.title}
                 bookAuthor={book.volumeInfo.authors}
                 bookImage={getThumbnailUrl(book)}
@@ -81,7 +82,7 @@ export default function Search () {
             ))}
           </div>
         </div>
-        <div className="flex justify-center mt-32 pb-10">
+        <div className="flex justify-center pb-10">
           <Pagination
             showControls
             variant="light"

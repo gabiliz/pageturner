@@ -5,7 +5,7 @@ export default function Navbar () {
   const pathname = usePathname()
 
   return (
-    <div className="py-8 flex justify-around px-40">
+    <div className="my-8 flex justify-around px-40">
       <Link href="/" className="text-ptsecondary text-xl font-semibold flex flex-col items-center">
         Home
         {pathname === '/' ? 

@@ -1,56 +1,132 @@
+import { useSession } from "next-auth/react";
 import BookCard from "~/components/BookCard";
+import BookListCarousel from "~/components/BookListCarousel";
 import Header from "~/components/Header";
+import { LoadingPage } from "~/components/Loading";
 import Navbar from "~/components/Navbar";
+import { UserSessionPage } from "~/components/UserSession";
 import { api } from "~/utils/api";
+import getThumbnailUrl from "~/utils/getThumbnailUrl";
+
+interface Book {
+  id: string;
+  volumeInfo: {
+    title: string;
+    authors: string[];
+    imageLinks: {
+      thumbnail: string;
+    };
+    industryIdentifiers: [
+      {
+        type: string;
+        identifier: string;
+      },
+    ];
+  };
+}
 
 export default function Library() {
+  const { data: sessionData } = useSession();
+  const { data: booksData } = api.book.getAll.useQuery();
+  const { data: read } = api.book.getBooksByList.useQuery({
+    listId: "lido",
+  });
+  const { data: reading } = api.book.getBooksByList.useQuery({
+    listId: "lendo",
+  });
+  const { data: wantsToRead } = api.book.getBooksByList.useQuery({
+    listId: "pretendo-ler",
+  });
+  const { data: readBooks } = api.book.listBooksById.useQuery({
+    idList: (read ?? []).map((item) => item.id),
+  });
+  const { data: readingBooks, isLoading } = api.book.listBooksById.useQuery({
+    idList: (reading ?? []).map((item) => item.id),
+  });
+  const { data: wantsToReadBooks } = api.book.listBooksById.useQuery({
+    idList: (wantsToRead ?? []).map((item) => item.id),
+  });
 
-  const {data: booksData, isLoading, isError} = api.book.getAll.useQuery();
-
+  console.log(readingBooks);
   return (
-    <main className="h-screen bg-ptprimary-500">
+    <main className="h-full bg-ptprimary-500">
+      {isLoading && <LoadingPage />}
       <Header />
       <Navbar />
-      {booksData?.length === 0 ? (
-        <div className="flex flex-col items-center justify-center mt-32">
-          <p className="font-bold text-6xl text-ptsecondary">Você ainda não possui nenhum livro salvo.</p>
-          <p className="mt-10 text-2xl text-ptsecondary">Comece pesquisando por alguns livros!</p>
-        </div>
+      {sessionData && readBooks ? (
+        booksData?.length === 0 ? (
+          <div className="flex flex-col items-center justify-center mt-32">
+            <p className="font-bold text-6xl text-ptsecondary">
+              Você ainda não possui nenhum livro salvo.
+            </p>
+            <p className="mt-10 text-2xl text-ptsecondary">
+              Comece pesquisando por alguns livros!
+            </p>
+          </div>
+        ) : (
+          <div className="px-24 pt-12">
+            <div>
+              <h1 className="mb-14 mt-24 text-6xl font-bold text-ptsecondary">
+                Lidos
+              </h1>
+              <div className="grid grid-flow-col gap-24">
+                {readBooks?.map((book: Book) => (
+                  <BookCard
+                    key={book.id}
+                    id={book.id}
+                    bookName={book.volumeInfo.title}
+                    bookAuthor={book.volumeInfo.authors}
+                    bookImage={getThumbnailUrl(book)}
+                    isProgress={false}
+                    isRating={false}
+                    isRatingWithReview={false}
+                  />
+                ))}
+              </div>
+            </div>
+            <div>
+              <h1 className="mb-14 mt-24 text-6xl font-bold text-ptsecondary">
+                Lendo
+              </h1>
+              <div className="grid grid-flow-col gap-24">
+                {readingBooks?.map((book: Book) => (
+                  <BookCard
+                    key={book.id}
+                    id={book.id}
+                    bookName={book.volumeInfo.title}
+                    bookAuthor={book.volumeInfo.authors}
+                    bookImage={getThumbnailUrl(book)}
+                    isProgress={false}
+                    isRating={false}
+                    isRatingWithReview={false}
+                  />
+                ))}
+              </div>
+            </div>
+            <div>
+              <h1 className="mb-14 mt-24 text-6xl font-bold text-ptsecondary">
+                Pretendo ler
+              </h1>
+              <div className="grid grid-flow-col gap-24">
+                {wantsToReadBooks?.map((book: Book) => (
+                  <BookCard
+                    key={book.id}
+                    id={book.id}
+                    bookName={book.volumeInfo.title}
+                    bookAuthor={book.volumeInfo.authors}
+                    bookImage={getThumbnailUrl(book)}
+                    isProgress={false}
+                    isRating={false}
+                    isRatingWithReview={false}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        )
       ) : (
-        <div className="px-24 pt-12">
-          <div>
-            <h1 className="mb-14 mt-24 text-6xl font-bold text-ptsecondary">
-              Lidos
-            </h1>
-            <div className="grid grid-flow-col gap-24">
-              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
-              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
-              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
-              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
-            </div>
-          </div>
-          <div>
-            <h1 className="mb-14 mt-24 text-6xl font-bold text-ptsecondary">
-              Lendo
-            </h1>
-            <div className="grid grid-flow-col gap-24">
-              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
-              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
-              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
-              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
-            </div>
-          </div>
-          <div>
-            <h1 className="mb-14 mt-24 text-6xl font-bold text-ptsecondary">
-              Pretendo ler
-            </h1>
-            <div className="grid grid-flow-col gap-24">
-              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
-              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
-              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
-              <BookCard isProgress={false} isRating={false} isRatingWithReview={false} bookImage={""} />
-            </div>
-          </div>
+        <div>
+          <UserSessionPage />
         </div>
       )}
     </main>
