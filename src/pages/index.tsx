@@ -41,8 +41,6 @@ export default function Home() {
     isbnList: ['9780807006474', '9781984801838', '9780399169274', '9780307951526']
   })
 
-  console.log(bestSellersBooks)
-
   return (
     <>
       <main className="h-full bg-ptprimary-500">

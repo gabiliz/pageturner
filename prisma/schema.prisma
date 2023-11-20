@@ -71,9 +71,9 @@ model Book {
     listId        String
     createdAt     DateTime  @default(now())
     userId        String
-    list          List      @relation(fields: [listId], references: [id], onDelete: Cascade)
+    list          List      @relation(fields: [listId], references: [id])
     log           Log[]
-    user          User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    user          User    @relation(fields: [userId], references: [id])
 }
 
 model List {

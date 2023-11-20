@@ -24,33 +24,33 @@ export const bookRouter = createTRPCRouter({
     .input(
       z.object({
         listId: z.string(),
-      })
+      }),
     )
-    .query(async ({input}) => {
+    .query(async ({ input }) => {
       const bookByList = await db.book.findMany({
         where: {
-          listId: input.listId
+          listId: input.listId,
         },
         select: {
-          id: true
-        }
-      })
-      return bookByList
+          id: true,
+        },
+      });
+      return bookByList;
     }),
 
   getBookById: publicProcedure
     .input(
       z.object({
         id: z.string(),
-      })
+      }),
     )
-    .query(async ({input}) => {
+    .query(async ({ input }) => {
       const books = await db.book.findUnique({
         where: {
-          id: input.id
-        }
-      })
-      return books
+          id: input.id,
+        },
+      });
+      return books;
     }),
 
   create: publicProcedure
@@ -58,17 +58,17 @@ export const bookRouter = createTRPCRouter({
       z.object({
         listId: z.string(),
         id: z.string(),
-        userId: z.string()
-      })
+        userId: z.string(),
+      }),
     )
-    .mutation(async ({input}) => {
+    .mutation(async ({ input }) => {
       await db.book.create({
         data: {
           listId: input.listId,
           id: input.id,
-          userId: input.userId
-        }
-      })
+          userId: input.userId,
+        },
+      });
     }),
 
   update: publicProcedure
@@ -76,19 +76,35 @@ export const bookRouter = createTRPCRouter({
       z.object({
         id: z.string(),
         listId: z.string(),
-        userId: z.string()
-      })
+        userId: z.string(),
+      }),
     )
-    .mutation(async ({input}) => {
+    .mutation(async ({ input }) => {
       await db.book.update({
         where: {
           id: input.id,
-          userId: input.userId
+          userId: input.userId,
         },
         data: {
-          listId: input.listId
-        }
-      })
+          listId: input.listId,
+        },
+      });
+    }),
+
+  delete: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        userId: z.string(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      await db.book.delete({
+        where: {
+          id: input.id,
+          userId: input.userId,
+        },
+      });
     }),
 
   searchBook: publicProcedure
@@ -117,75 +133,81 @@ export const bookRouter = createTRPCRouter({
       const bookRes = await fetch(
         `${googleBooksApiUrl}isbn:${input.isbn13}&key=${googleBooksApiKey}`,
       );
-      return bookRes.json()
+      return bookRes.json();
     }),
 
-    getBookByApiId: publicProcedure
-      .input(
-        z.object({
-          id: z.string().describe(`Id da api`)
-        }),
-      )
-      .query(async ({ input }) => {
-        const bookRes = await fetch(
-          `https://www.googleapis.com/books/v1/volumes/${input.id}`
-        );
-        return bookRes.json()
+  getBookByApiId: publicProcedure
+    .input(
+      z.object({
+        id: z.string().describe(`Id da api`),
       }),
-
-    getBestsellers: publicProcedure.query(async () => {
-      const bestSellers = await fetch(
-        `${newYorkTimesApiUrl}/best-sellers/history.json?api-key=${newYorkTimesApiKey}`,
+    )
+    .query(async ({ input }) => {
+      const bookRes = await fetch(
+        `https://www.googleapis.com/books/v1/volumes/${input.id}`,
       );
-      return bestSellers.json();
+      return bookRes.json();
     }),
 
-    getNewReleases: publicProcedure.query(async () => {
-      const newReleases = await fetch(
-        `${newYorkTimesApiUrl}/current/hardcover-fiction.json?api-key=${newYorkTimesApiKey}`,
-      );
-      return newReleases.json();
-    }),
+  getBestsellers: publicProcedure.query(async () => {
+    const bestSellers = await fetch(
+      `${newYorkTimesApiUrl}/best-sellers/history.json?api-key=${newYorkTimesApiKey}`,
+    );
+    return bestSellers.json();
+  }),
 
-    listBooks: publicProcedure
-    .input(z.object({
-      isbnList: z.array(z.string()),
-    }))
+  getNewReleases: publicProcedure.query(async () => {
+    const newReleases = await fetch(
+      `${newYorkTimesApiUrl}/current/hardcover-fiction.json?api-key=${newYorkTimesApiKey}`,
+    );
+    return newReleases.json();
+  }),
+
+  listBooks: publicProcedure
+    .input(
+      z.object({
+        isbnList: z.array(z.string()),
+      }),
+    )
     .query(async ({ input }) => {
       const { isbnList } = input;
-      const listedBooks = isbnList.map(isbn =>
+      const listedBooks = isbnList.map((isbn) =>
         fetch(`${googleBooksApiUrl}isbn:${isbn}&key=${googleBooksApiKey}`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`Failed to fetch details for ISBN ${isbn}`);
-          }
-          return response.json();
-        })
-        .catch(error => ({ error: `Failed to fetch details for ISBN ${isbn}, Error: ${error}` }))
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`Failed to fetch details for ISBN ${isbn}`);
+            }
+            return response.json();
+          })
+          .catch((error) => ({
+            error: `Failed to fetch details for ISBN ${isbn}, Error: ${error}`,
+          })),
       );
       const bookDetails = await Promise.all(listedBooks);
       return bookDetails;
     }),
-    
-    listBooksById: publicProcedure
+
+  listBooksById: publicProcedure
     .input(
       z.object({
         idList: z.array(z.string()),
-      })
+      }),
     )
-    .query(async ({input}) => {
+    .query(async ({ input }) => {
       const { idList } = input;
-      const listedBooks = idList.map(id =>
+      const listedBooks = idList.map((id) =>
         fetch(`https://www.googleapis.com/books/v1/volumes/${id}`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`Failed to fetch details for ID ${id}`);
-          }
-          return response.json();
-        })
-        .catch(error => ({ error: `Failed to fetch details for ID ${id}, Error: ${error}` }))
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`Failed to fetch details for ID ${id}`);
+            }
+            return response.json();
+          })
+          .catch((error) => ({
+            error: `Failed to fetch details for ID ${id}, Error: ${error}`,
+          })),
       );
       const bookDetails = await Promise.all(listedBooks);
       return bookDetails;
-    })
+    }),
 });

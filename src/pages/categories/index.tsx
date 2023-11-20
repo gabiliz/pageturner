@@ -9,9 +9,6 @@ export default function Categories () {
     <Navbar />
     <div className="px-24 pt-12">
       <div>
-        <div>
-          <p>Estamos listando apenas seus gêneros favoritos</p>
-        </div>
         <h1 className="mb-14 mt-24 text-6xl font-bold text-ptsecondary">
           Horror
         </h1>

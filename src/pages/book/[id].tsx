@@ -28,14 +28,16 @@ import { Rating } from "@mui/material";
 import { Progress } from "@nextui-org/react";
 import { Textarea } from "~/components/ui/textarea";
 import { ErrorPage } from "~/components/Error";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useState } from "react";
 import { useToast } from "~/components/ui/use-toast";
 import { useSession } from "next-auth/react";
-import { Form, Formik, FormikHelpers, FormikValues } from "formik";
+import { Form, Formik } from "formik";
 import { Transition, Dialog } from "@headlessui/react";
 import React from "react";
+import { Toaster } from "~/components/ui/toaster";
 
-interface logFormData {
+interface LogFormData {
+  listId: string;
   review: string;
   rating: number;
   progress: number;
@@ -48,7 +50,7 @@ interface BookFormData {
 }
 
 export default function Book() {
-  const [selectedOption, setSelectedOption] = useState<string>("");
+  const [, setSelectedOption] = useState<string>("");
   const [isOpen, setIsOpen] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
@@ -56,10 +58,14 @@ export default function Book() {
   const id = String(router.query.id);
   const bookCreateMutation = api.book.create.useMutation();
   const bookEditMutation = api.book.update.useMutation();
-  const utils = api.useContext()
-  const { data: listsData } = api.list.getAll.useQuery()
+  const logMutation = api.log.createOrUpdateLogWithBook.useMutation();
+  const utils = api.useContext();
+  const { data: listsData } = api.list.getAll.useQuery();
   const { data: userData } = api.user.getById.useQuery({
     id: sessionData?.user.id ?? "",
+  });
+  const { data: savedBook, isFetching } = api.book.getBookById.useQuery({
+    id: id,
   });
   const {
     data: bookData,
@@ -68,37 +74,27 @@ export default function Book() {
   } = api.book.getBookByApiId.useQuery({
     id: id,
   });
-  
-  // const { data: existingLog } = api.log.getByBookAndUserId.useQuery({
-  //   userId: userData?.id,
-  //   bookId: bookData?.id,
-  // })
-  const {
-    data: savedBook
-  } = api.book.getBookById.useQuery({
-    id: bookData?.id
-  })
 
-  const {
-    data: allBooks
-  } = api.book.getAll.useQuery()
+  const { data: existingLog } = api.log.getByBookAndUserId.useQuery({
+    userId: userData?.id !== undefined ? userData.id : "",
+    bookId: bookData?.id,
+  });
 
-  const initialValues = {
-    id: "",
-    review: "",
-    rating: 0,
-    progress: "",
+  const { data: allBooks } = api.book.getAll.useQuery();
+
+  const logInitialValues = {
+    id: existingLog?.id ?? "",
+    review: existingLog?.review ?? "",
+    rating: existingLog?.rating ?? 0,
+    progress: existingLog?.progress ?? 0,
+    listId: existingLog?.listId ?? savedBook?.listId ?? ""
   };
-
-  console.log(bookData);
 
   const selectInitialValues = {
-    id: bookData?.id ?? "",
+    id: savedBook?.id ?? "",
     listId: savedBook?.listId ?? "",
-    userId: sessionData?.user.id ?? ""
+    userId: savedBook?.userId ?? "",
   };
-
-  console.log(selectInitialValues, 'initalvalues')
 
   const editThumbnailUrl = (url: string | undefined) => {
     const defaultThumbnail = "https://via.placeholder.com/564x900";
@@ -138,87 +134,49 @@ export default function Book() {
     setSelectedOption(values.listId);
 
     if (sessionData) {
-      if (allBooks?.find(book => book.id === bookData.id)) {
+      if (allBooks?.find((book) => book.id === bookData.id)) {
         bookEditMutation.mutate({
           listId: values.listId,
           id: bookData.id,
           userId: sessionData.user.id,
         });
-        console.log("editou");
       } else {
         bookCreateMutation.mutate({
           listId: values.listId,
           id: bookData.id,
           userId: sessionData.user.id,
         });
-        console.log("criou");
       }
-      toast({
-        variant: "success",
-        title: "Livro adcionado a uma lista!",
-        description: "Sua alteração foi salva com sucesso!",
-      });
     }
     if (savedBook) {
-      void utils.book.getBookById.fetch({id: savedBook.id})
+      void utils.book.getBookById.fetch({ id: savedBook.id });
     }
   };
 
-  // const handleSave = () => {
-
-  // }
-
-  // const handleEditBook = () => {
-  //   bookEditMutation.mutate({
-  //     id: bookData.id,
-  //     listId:
-  //   })
-  //   setIsOpen(false)
-  // }
-
-  // const handleCreateLog = (values: logFormData) => {
-  //   if (userData) {
-  //     logCreateMutation.mutate({
-  //       review: values.review,
-  //       rating: values.rating,
-  //       progress: values.progress,
-  //       bookId: bookData.id,
-  //       userId: userData.id,
-  //     });
-  //   }
-  //   toast({
-  //     variant: "success",
-  //     title: "Registro salvo!",
-  //     description: "Seu registro foi salvo com sucesso!",
-  //   });
-  //   setIsOpen(false);
-  // };
-
-  // const handleEditLog = () => {
-  //   logEditMutation.mutate({
-  //     id:
-  //     review:
-  //     rating:
-  //     progress
-  //   })
-  //   toast({
-  //     variant: 'success',
-  //     title: 'Alteração salva!',
-  //     description: 'Sua alteração foi salva com sucesso!'
-  //   })
-  //   setIsOpen(false)
-  // }
-
-  useEffect(() => {
-    if(savedBook) {
-      setSelectedOption(savedBook.listId)
+  const handleSaveLog = (values: LogFormData) => {
+    if(sessionData) {
+      logMutation.mutate({
+        listId: values.listId,
+        userId: sessionData.user.id,
+        bookId: bookData.id,
+        review: values.review,
+        rating: values.rating,
+        progress: Number(values.progress)
+      })
+      toast({
+        variant: "success",
+        title: "Registro salvo!",
+        description: "Seu registro foi salvo com sucesso!",
+      });
+      setIsOpen(false);
+      void utils.log.getByBookAndUserId.fetch({ userId: sessionData.user.id, bookId: bookData.id })
     }
-  }, []);
+  }
 
   return (
     <>
       <div className="h-screen bg-ptprimary-500">
-        {isLoading && <LoadingPage />}
+        {isLoading && isFetching && <LoadingPage />}
         {isError && <ErrorPage />}
         {bookData && (
           <>
@@ -241,23 +199,29 @@ export default function Book() {
                   alt={""}
                 />
                 <div className="flex flex-col items-center mt-5">
-                  {/* {logData?.rating ? 
-                  <Rating
-                    className="mb-3"
-                    defaultValue={2.5}
-                    precision={0.5}
-                    size="large"
-                    readOnly
-                  /> 
-                  : null}
-                  {logData?.progress ? 
+                  {existingLog?.rating ? (
+                    <Rating
+                      className="mb-3"
+                      defaultValue={existingLog.rating}
+                      precision={0.5}
+                      size="large"
+                      readOnly
+                    />
+                  ) : null}
+                  {existingLog?.progress ? (
                     <Progress
                       className="mb-6"
                       showValueLabel={true}
-                      label={pageCount(bookData.volumeInfo.pageCount, logData.progress)}
+                      label={pageCount(
+                        bookData.volumeInfo.pageCount,
+                        existingLog.progress,
+                      )}
                       size="md"
                       aria-label="Loading..."
-                      value={pagePercentage(bookData.volumeInfo.pageCount)}
+                      value={pagePercentage(
+                        bookData.volumeInfo.pageCount,
+                        existingLog.progress,
+                      )}
                       classNames={{
                         track: "bg-ptprimary-900",
                         indicator: "bg-ptsecondary",
@@ -265,7 +229,7 @@ export default function Book() {
                         value: "text-ptsecondary/90",
                       }}
                     />
-                  : null} */}
+                  ) : null}
                   {sessionData ? (
                     <Button className="w-60 mb-6" onClick={openModal}>
                       Registrar
@@ -282,10 +246,8 @@ export default function Book() {
                         aria-hidden="true"
                       >
                         <Formik
-                          initialValues={initialValues}
-                          onSubmit={() => {
-                            console.log("teste");
-                          }}
+                          initialValues={logInitialValues}
+                          onSubmit={handleSaveLog}
                         >
                           {(props) => (
                             <Form>
@@ -349,21 +311,29 @@ export default function Book() {
                                           </div>
                                           <div className="col-span-2">
                                             <Label htmlFor="name">Lista</Label>
-                                            <Select>
+                                            <Select
+                                              onValueChange={(value) => {
+                                                void props.setFieldValue(
+                                                  "listId",
+                                                  value,
+                                                );
+                                                void props.submitForm();
+                                              }}
+                                              value={props.values.listId}
+                                            >
                                               <SelectTrigger>
                                                 <SelectValue placeholder="Selecione uma lista" />
                                               </SelectTrigger>
                                               <SelectContent>
                                                 <SelectGroup>
-                                                  <SelectItem value="lido">
-                                                    Lido
-                                                  </SelectItem>
-                                                  <SelectItem value="lendo">
-                                                    Lendo
-                                                  </SelectItem>
-                                                  <SelectItem value="pretendo-ler">
-                                                    Pretendo ler
-                                                  </SelectItem>
+                                                  {listsData?.map((list) => (
+                                                    <SelectItem
+                                                      key={list.id}
+                                                      value={list.id}
+                                                    >
+                                                      {list.name}
+                                                    </SelectItem>
+                                                  ))}
                                                 </SelectGroup>
                                               </SelectContent>
                                             </Select>
@@ -374,7 +344,7 @@ export default function Book() {
                                             </Label>
                                             <Input
                                               type="number"
-                                              max="20"
+                                              max={bookData.volumeInfo.pageCount}
                                               id="progress"
                                               className="col-span-6"
                                               value={props.values.progress}
@@ -393,16 +363,13 @@ export default function Book() {
                                               size="large"
                                               precision={0.5}
                                               value={props.values.rating}
-                                              onChange={(rating) => {
-                                                void props.setFieldValue(
-                                                  "rating",
-                                                  rating,
-                                                );
+                                              onChange={(event, newValue) => {
+                                                void props.setFieldValue("rating", newValue);
                                               }}
                                             />
                                           </div>
                                         </div>
-                                        <div>
+                                        <div className="flex justify-end mt-4">
                                           <Button type="submit">
                                             Salvar alterações
                                           </Button>
@@ -420,32 +387,35 @@ export default function Book() {
                   </Transition>
                   {sessionData ? (
                     <>
-                    <Formik initialValues={selectInitialValues} onSubmit={handleSelectChange}>
-                      {(props) => (
-                        <Form>
-                          <Select
-                            onValueChange={(value) => {
-                              void props.setFieldValue('listId', value)
-                              void props.submitForm()
-                            }}
-                            value={savedBook?.listId}
-                          >
-                            <SelectTrigger className="w-60">
-                              <SelectValue placeholder="Selecione uma lista" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectGroup>
-                                {listsData?.map((list) => (
-                                  <SelectItem key={list.id} value={list.id}>
-                                    {list.name}
-                                  </SelectItem>
-                                ))}
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                        </Form>
-                      )}
-                    </Formik>
+                      <Formik
+                        initialValues={selectInitialValues}
+                        onSubmit={handleSelectChange}
+                      >
+                        {(props) => (
+                          <Form>
+                            <Select
+                              onValueChange={(value) => {
+                                void props.setFieldValue("listId", value);
+                                void props.submitForm();
+                              }}
+                              value={props.values.listId}
+                            >
+                              <SelectTrigger className="w-60">
+                                <SelectValue placeholder="Selecione uma lista" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectGroup>
+                                  {listsData?.map((list) => (
+                                    <SelectItem key={list.id} value={list.id}>
+                                      {list.name}
+                                    </SelectItem>
+                                  ))}
+                                </SelectGroup>
+                              </SelectContent>
+                            </Select>
+                          </Form>
+                        )}
+                      </Formik>
                     </>
                   ) : null}
                 </div>
@@ -460,16 +430,16 @@ export default function Book() {
                     __html: bookData.volumeInfo.description,
                   }}
                 />
-                {/* {logData?.review ? 
+                {existingLog?.review ? (
                   <div className="mt-8">
                     <p className="text-ptsecondary text-2xl font-bold mb-1">
                       Review
                     </p>
                     <div className="bg-ptprimary-900 rounded-lg py-5 px-7">
-                      <p className="text-ptsecondary">{logData.review}</p>
+                      <p className="text-ptsecondary">{existingLog.review}</p>
                     </div>
                   </div>
-                : null} */}
+                ) : null}
               </div>
               <div className="ml-8">
                 <div className="mb-8">
@@ -517,6 +487,7 @@ export default function Book() {
                 </div>
               </div>
             </div>
+            <Toaster />
           </>
         )}
       </div>

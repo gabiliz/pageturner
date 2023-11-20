@@ -50,7 +50,6 @@ export default function Library() {
     idList: (wantsToRead ?? []).map((item) => item.id),
   });
 
-  console.log(readingBooks);
   return (
     <main className="h-full bg-ptprimary-500">
       {isLoading && <LoadingPage />}
