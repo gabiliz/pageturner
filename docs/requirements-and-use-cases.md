@@ -12,27 +12,22 @@
 - Os usuários devem poder atribuir uma classificação em estrelas aos livros.
 - Eles devem ser capazes de escrever resenhas para acompanhar suas avaliações.
 
-**3. Descobrir Novos Livros:**
-
-- O sistema deve oferecer recomendações personalizadas com base nas preferências do usuário.
-- Os livros sugeridos devem ser relevantes e relacionados aos gostos do usuário.
-
-**4. Adicionar livros a listas de Leitura:**
+**3. Adicionar livros a listas de Leitura:**
 
 - Os usuários devem poder adicionar os livros nas listas existentes.
 - Eles devem ser capazes de adicionar e remover livros dessas listas.
 
-**5. Escrever Resenhas:**
+**4. Escrever Resenhas:**
 
 - Os usuários devem ser capazes de escrever resenhas detalhadas sobre os livros.
 - As resenhas devem ser exibidas nas páginas dos livros.
 
-**6. Registrar Livros Lidos:**
+**5. Registrar Livros Lidos:**
 
 - Os usuários devem ser capazes de adicionar livros lidos ao seu perfil.
 - Um histórico de livros lidos deve ser mantido para referência.
 
-**7. Registrar Livros que estão sendo lidos:**
+**6. Registrar Livros que estão sendo lidos:**
 
 - Os usuários devem ser capazes de adicionar livros que estão sendo lidos ao seu perfil.
 - Os usuários devem ser capazes de adicionar seu progresso do livro.

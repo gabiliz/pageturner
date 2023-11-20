@@ -15,7 +15,7 @@
 
 ## Objetivo
 
-O objetivo principal é criar um site para organização de leitura utilizando o acervo de livros da API pública do Google, que fornece uma gama de livros e com todas as informações necessárias. Sendo desenvolvido em React, Next e Ruby on Rails, qualquer usuário que tenha acesso a internet, independente da plataforma, e que possa utilizar um website terá como utilizar.
+O objetivo principal é criar um site para organização de leitura utilizando o acervo de livros da API pública do Google, que fornece uma gama de livros e com todas as informações necessárias. Sendo desenvolvido em React, Next e tRPC, qualquer usuário que tenha acesso a internet, independente da plataforma, e que possa utilizar um website terá como utilizar.
 
 O foco do website é auxiliar o usuário a organizar suas leituras independentemente da maneira que foi lido, sendo em um PDF, áudio-book, Kindle ou até um livro físico. Com a utilização da API pública do Google fornecendo os dados dos livros, o usuário poderá pesquisar o livro que deseja e cadastrá-lo na categoria que desejar, sendo elas: Já lido, Lendo e Pretendo ler. Além disso, ele poderá dar uma nota a sua leitura e ainda escrever um review sobre. Caso a leitura ainda esteja em progresso, ele poderá inserir em qual página a sua leitura parou para então ver o seu progresso e ir atualizando-o com o tempo. Como todos esses dados serão salvos a partir do seu login com a conta do Google, o usuário poderá acessar em qualquer dispositivo estando logado na sua conta para visualizar suas informações ou até fazer atualizações.
 
@@ -35,11 +35,11 @@ O foco do website é auxiliar o usuário a organizar suas leituras independentem
 
 **4. Desenvolvimento:**
 
-- Será desenvolvido as telas na parte do front-end em React, Typescript e Next, e para o back-end será desenvolvido a API em Ruby on Rails para que capture os dados da API pública do Google Books e que seja feito todas as funções necessárias para apresentar.
+- Será desenvolvido as telas na parte do front-end em React, Typescript e Next, e para o back-end será desenvolvido a API em tRPC para que capture os dados da API pública do Google Books e que seja feito todas as funções necessárias para apresentar.
 
 **5. Qualidade:**
 
-- Implementação de testes unitários tanto no back-end quanto no front-end do projeto, tendo uma grande cobertura de testes para garantir o funcionamento do sistema. Além disso será implementado o SonarQube para garantir que o código esteja de boa qualidade.
+- Implementação de testes unitários tanto no back-end quanto no front-end do projeto, tendo uma grande cobertura de testes para garantir o funcionamento do sistema. Além disso será implementado o ESLint para garantir que o código esteja de boa qualidade.
 
 **6. CI/CD:**
 
@@ -47,7 +47,7 @@ O foco do website é auxiliar o usuário a organizar suas leituras independentem
 
 **7. Observabilidade:**
 
-- Aplicação de softwares para monitoramento como o NewRelic.
+- Implementação do Highlight para monitoramento, garantindo uma análise abrangente e eficiente do desempenho da aplicação.
 
 ## Contexto
 
