@@ -20,6 +20,21 @@ export const bookRouter = createTRPCRouter({
     return ctx.db.book.findMany();
   }),
 
+  getAllByUser: publicProcedure
+    .input(
+      z.object({
+        userId: z.string()
+      })
+    )
+    .query(async ({input}) => {
+      const books = await db.book.findMany({
+        where: {
+          userId: input.userId
+        }
+      })
+      return books
+    }),
+
   getBooksByList: publicProcedure
     .input(
       z.object({

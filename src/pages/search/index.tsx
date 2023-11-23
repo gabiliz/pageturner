@@ -18,7 +18,12 @@ interface Book {
     title: string;
     authors: string[];
     imageLinks: {
+      smallThumbnail: string;
       thumbnail: string;
+      small: string;
+      medium: string;
+      large: string;
+      extraLarge: string;
     }
     industryIdentifiers: [
       {
@@ -62,7 +67,7 @@ export default function Search () {
 
   if (booksArray.length > 0) {
     return (
-      <div className="h-full bg-ptprimary-500">
+      <div className="h-full min-h-screen bg-ptprimary-500">
         <Header />
         <Navbar />
         <div className="flex justify-center items-center h-full">

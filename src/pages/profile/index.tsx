@@ -9,7 +9,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { Form, Formik } from "formik";
 import { useSession } from "next-auth/react";
-import React, { Fragment, useState } from "react";
+import React, { ComponentType, Fragment, useState } from "react";
 import DatePicker from "tailwind-datepicker-react";
 import { ErrorPage } from "~/components/Error";
 import Header from "~/components/Header";
@@ -29,6 +29,12 @@ import {
 import * as Yup from "yup";
 import { type IOptions } from "tailwind-datepicker-react/types/Options";
 import { UserSessionPage } from "~/components/UserSession";
+import dynamic from "next/dynamic";
+
+const DynamicUserSessionPage = dynamic(
+  () => import('../../components/UserSession').then((module) => module.UserSessionPage) as Promise<ComponentType<object>>,
+  { loading: () => <LoadingPage /> }
+);
 
 interface UserFormData {
   name: string;
@@ -88,6 +94,12 @@ export default function Profile() {
     id: sessionData?.user.id ?? "",
   });
 
+  const {
+    data: booksData
+  } = api.book.getAllByUser.useQuery({
+    userId: userData?.id !== undefined ? userData.id : "",
+  })
+
   const mutation = api.user.update.useMutation();
   const utils = api.useContext()
 
@@ -103,6 +115,23 @@ export default function Profile() {
     pronouns: Yup.string(),
     birthday: Yup.date(),
   });
+
+  const totalBooks = () => {
+    if(userData && booksData) {
+      return booksData.map(books => books.createdAt).length
+    }
+  }
+
+  const totalBooksThisYear = () => {
+    const year = new Date().getFullYear()
+    if (userData && booksData) {
+      const thisYear = booksData.filter(books => {
+        const savedYear = new Date(books.createdAt).getFullYear()
+        return savedYear === year
+      })
+      return thisYear.length
+    }
+  }
 
   const closeModal = () => {
     setIsOpen(false);
@@ -136,7 +165,7 @@ export default function Profile() {
 
   return (
     <>
-      <div className="h-screen bg-ptprimary-500">
+      <div className="h-full min-h-screen bg-ptprimary-500">
         {isLoading && <LoadingPage />}
         {isError && <ErrorPage />}
         {userData && sessionData ? (
@@ -281,14 +310,14 @@ export default function Profile() {
                 <div className="flex ml-40">
                   <div className="flex flex-col items-center">
                     <p className="text-2xl font-semibold text-ptsecondary">
-                      100
+                      {totalBooks()}
                     </p>
                     <p className="text-lg text-ptsecondary">Livros</p>
                   </div>
                   <div className="mx-4 h-[60px] w-[3px] rounded-sm bg-ptprimary-900"></div>
                   <div className="flex flex-col items-center">
                     <p className="text-2xl font-semibold text-ptsecondary">
-                      20
+                      {totalBooksThisYear()}
                     </p>
                     <p className="text-lg text-ptsecondary">Esse ano</p>
                   </div>
@@ -326,7 +355,7 @@ export default function Profile() {
           </>
         ) : 
         <div>
-          <UserSessionPage />
+          <DynamicUserSessionPage />
         </div>
         }
       </div>

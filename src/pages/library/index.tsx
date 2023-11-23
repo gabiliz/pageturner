@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { useSession } from "next-auth/react";
 import BookCard from "~/components/BookCard";
@@ -10,6 +12,15 @@ import getThumbnailUrl from "~/utils/getThumbnailUrl";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation } from 'swiper/modules';
 import "swiper/swiper-bundle.css";
+import dynamic from "next/dynamic";
+import { type ComponentType } from "react";
+
+
+const DynamicUserSessionPage = dynamic(
+  () => import('../../components/UserSession').then((module) => module.UserSessionPage) as Promise<ComponentType<object>>,
+  { loading: () => <LoadingPage /> }
+);
+
 
 interface Book {
   id: string;
@@ -51,11 +62,11 @@ export default function Library() {
   });
 
   return (
-    <main className="h-full bg-ptprimary-500">
+    <main className="h-full min-h-screen bg-ptprimary-500">
       {isLoading && <LoadingPage />}
       <Header />
       <Navbar />
-      {sessionData && readBooks && readingBooks && wantsToReadBooks ? (
+      {sessionData  ? (
         booksData?.length === 0 ? (
           <div className="flex flex-col items-center justify-center mt-32">
             <p className="font-bold text-6xl text-ptsecondary">
@@ -158,7 +169,7 @@ export default function Library() {
         )
       ) : (
         <div>
-          <UserSessionPage />
+          <DynamicUserSessionPage />
         </div>
       )}
     </main>

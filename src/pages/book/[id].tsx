@@ -52,6 +52,7 @@ interface BookFormData {
 export default function Book() {
   const [, setSelectedOption] = useState<string>("");
   const [isOpen, setIsOpen] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
   const { data: sessionData } = useSession();
@@ -87,7 +88,7 @@ export default function Book() {
     review: existingLog?.review ?? "",
     rating: existingLog?.rating ?? 0,
     progress: existingLog?.progress ?? 0,
-    listId: existingLog?.listId ?? savedBook?.listId ?? ""
+    listId: existingLog?.listId ?? savedBook?.listId ?? "",
   };
 
   const selectInitialValues = {
@@ -101,7 +102,7 @@ export default function Book() {
     if (url === undefined) {
       return defaultThumbnail;
     }
-    return url.replace("zoom=1", "zoom=0").replace("&edge=curl", "");
+    return url.replace("&edge=curl", "");
   };
 
   const configAuthors = (authors: string[]) => {
@@ -154,36 +155,43 @@ export default function Book() {
   };
 
   const handleSaveLog = (values: LogFormData) => {
-    if(sessionData) {
+    if (sessionData) {
       logMutation.mutate({
         listId: values.listId,
         userId: sessionData.user.id,
         bookId: bookData.id,
         review: values.review,
         rating: values.rating,
-        progress: Number(values.progress)
-      })
+        progress: Number(values.progress),
+      });
       toast({
         variant: "success",
         title: "Registro salvo!",
         description: "Seu registro foi salvo com sucesso!",
       });
       setIsOpen(false);
-      void utils.log.getByBookAndUserId.fetch({ userId: sessionData.user.id, bookId: bookData.id })
+      void utils.log.getByBookAndUserId.fetch({
+        userId: sessionData.user.id,
+        bookId: bookData.id,
+      });
     }
-  }
+  };
 
   return (
     <>
-      <div className="h-screen bg-ptprimary-500">
+      <div className="h-full min-h-screen bg-ptprimary-500">
         {isLoading && isFetching && <LoadingPage />}
         {isError && <ErrorPage />}
         {bookData && (
           <>
             <Header />
             <div className="px-16 py-8">
-              <Button onClick={returnToLastPage}>
-                <ChevronLeftIcon className="h-5 w-5" />
+              <Button
+                variant="ghost"
+                className="rounded-3xl"
+                onClick={returnToLastPage}
+              >
+                <ChevronLeftIcon className="h-6 w-6 text-ptsecondary" />
               </Button>
             </div>
             <div className="flex justify-center p-16">
@@ -197,6 +205,7 @@ export default function Book() {
                   width={280}
                   height={500}
                   alt={""}
+                  onLoadingComplete={() => setLoaded(true)}
                 />
                 <div className="flex flex-col items-center mt-5">
                   {existingLog?.rating ? (
@@ -344,7 +353,9 @@ export default function Book() {
                                             </Label>
                                             <Input
                                               type="number"
-                                              max={bookData.volumeInfo.pageCount}
+                                              max={
+                                                bookData.volumeInfo.pageCount
+                                              }
                                               id="progress"
                                               className="col-span-6"
                                               value={props.values.progress}
@@ -364,7 +375,10 @@ export default function Book() {
                                               precision={0.5}
                                               value={props.values.rating}
                                               onChange={(event, newValue) => {
-                                                void props.setFieldValue("rating", newValue);
+                                                void props.setFieldValue(
+                                                  "rating",
+                                                  newValue,
+                                                );
                                               }}
                                             />
                                           </div>

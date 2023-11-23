@@ -15,7 +15,6 @@ interface Book {
   }
 }
 
-
 function getThumbnailUrl (book: Book): string {
   const defaultThumbnail = 'https://via.placeholder.com/564x900';
   const rawThumbnail =  book.volumeInfo.imageLinks?.thumbnail || defaultThumbnail
@@ -24,7 +23,7 @@ function getThumbnailUrl (book: Book): string {
 
 const editThumbnailUrl = (url: string): string => {
   if (url) {
-    return url.replace("zoom=1", "zoom=0").replace("&edge=curl", "");
+    return url.replace("&edge=curl", "");
   }
   return url;
 };

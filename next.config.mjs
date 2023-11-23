@@ -19,6 +19,13 @@ const config = {
   },
   images: {
     domains: ['example.com', 'edit.org', 'i.pravatar.cc', 'books.google.com', 'via.placeholder.com'],
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'books.google.com',
+        port: '',
+      }
+    ]
   },
 };
 
