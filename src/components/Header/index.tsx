@@ -102,7 +102,7 @@ export default function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button onClick={() => void signIn("google")}>Sign In</Button>
+            <Button id="login-button" onClick={() => void signIn("google")}>Sign In</Button>
           )}
         </div>
       </main>

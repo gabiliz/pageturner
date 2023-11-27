@@ -9,7 +9,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { Form, Formik } from "formik";
 import { useSession } from "next-auth/react";
-import React, { ComponentType, Fragment, useState } from "react";
+import React, { type ComponentType, Fragment, useState } from "react";
 import DatePicker from "tailwind-datepicker-react";
 import { ErrorPage } from "~/components/Error";
 import Header from "~/components/Header";
@@ -28,7 +28,6 @@ import {
 } from "~/utils/dateFormat";
 import * as Yup from "yup";
 import { type IOptions } from "tailwind-datepicker-react/types/Options";
-import { UserSessionPage } from "~/components/UserSession";
 import dynamic from "next/dynamic";
 
 const DynamicUserSessionPage = dynamic(
@@ -82,20 +81,21 @@ const options: IOptions = {
 
 export default function Profile() {
   const { toast } = useToast();
-  const { data: sessionData } = useSession();
+  const { data: sessionData, status } = useSession();
   const [show, setShow] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
   const {
     data: userData,
-    isLoading,
+    isLoading: isLoadingUser,
     isError,
   } = api.user.getById.useQuery({
     id: sessionData?.user.id ?? "",
   });
 
   const {
-    data: booksData
+    data: booksData,
+    isLoading: isLoadingBooks
   } = api.book.getAllByUser.useQuery({
     userId: userData?.id !== undefined ? userData.id : "",
   })
@@ -163,10 +163,13 @@ export default function Profile() {
     }
   };
 
+  if (status === "loading" && (isLoadingUser || isLoadingBooks)) {
+    return <LoadingPage />
+  }
+
   return (
     <>
       <div className="h-full min-h-screen bg-ptprimary-500">
-        {isLoading && <LoadingPage />}
         {isError && <ErrorPage />}
         {userData && sessionData ? (
           <>

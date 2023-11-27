@@ -6,6 +6,7 @@ import { api } from "~/utils/api";
 import { HighlightInit } from "@highlight-run/next/client";
 
 import "~/styles/globals.css";
+import "~/styles/swiper-styles.css"
 import Head from "next/head";
 
 const MyApp: AppType<{ session: Session | null }> = ({

@@ -9,7 +9,9 @@ import { api } from "~/utils/api";
 import getThumbnailUrl from "~/utils/getThumbnailUrl";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation } from "swiper/modules";
-import "swiper/swiper-bundle.css";
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 interface Book {
   id: string;
   volumeInfo: {

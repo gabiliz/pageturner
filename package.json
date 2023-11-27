@@ -8,7 +8,13 @@
     "dev": "next dev",
     "postinstall": "prisma generate",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "test:e2e": "playwright test",
+    "test:e2e-ui": "npx playwright test --ui",
+    "test:e2e-report": "npx playwright show-report",
+    "test:unit": "vitest",
+    "test:unit-coverage": "vitest run --coverage",
+    "test:unit-ui": "vitest --ui"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -57,22 +63,30 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "@testing-library/react": "^14.1.2",
     "@types/eslint": "^8.44.2",
     "@types/node": "^18.16.0",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^6.3.0",
     "@typescript-eslint/parser": "^6.3.0",
+    "@vitejs/plugin-react": "^4.2.0",
+    "@vitest/ui": "^0.34.6",
     "autoprefixer": "^10.4.14",
     "cypress": "^13.5.1",
     "eslint": "^8.47.0",
     "eslint-config-next": "^13.4.19",
+    "jsdom": "^22.1.0",
+    "msw": "^2.0.9",
     "postcss": "^8.4.27",
     "prettier": "^3.0.0",
     "prettier-plugin-tailwindcss": "^0.5.1",
     "prisma": "^5.1.1",
     "tailwindcss": "^3.3.3",
-    "typescript": "^5.1.6"
+    "typescript": "^5.1.6",
+    "vite": "^5.0.2",
+    "vitest": "^0.34.6"
   },
   "ct3aMetadata": {
     "initVersion": "7.20.2"

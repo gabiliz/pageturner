@@ -6,12 +6,13 @@ import BookCard from "~/components/BookCard";
 import Header from "~/components/Header";
 import { LoadingPage } from "~/components/Loading";
 import Navbar from "~/components/Navbar";
-import { UserSessionPage } from "~/components/UserSession";
 import { api } from "~/utils/api";
 import getThumbnailUrl from "~/utils/getThumbnailUrl";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation } from 'swiper/modules';
-import "swiper/swiper-bundle.css";
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 import dynamic from "next/dynamic";
 import { type ComponentType } from "react";
 
@@ -40,8 +41,8 @@ interface Book {
 }
 
 export default function Library() {
-  const { data: sessionData } = useSession();
-  const { data: booksData } = api.book.getAll.useQuery();
+  const { data: sessionData, status } = useSession();
+  const { data: booksData, isLoading: isLoadingBooks } = api.book.getAll.useQuery();
   const { data: read } = api.book.getBooksByList.useQuery({
     listId: "lido",
   });
@@ -54,16 +55,21 @@ export default function Library() {
   const { data: readBooks } = api.book.listBooksById.useQuery({
     idList: (read ?? []).map((item) => item.id),
   });
-  const { data: readingBooks, isLoading } = api.book.listBooksById.useQuery({
+  const { data: readingBooks, isLoading: isLoadingReadingBooks } = api.book.listBooksById.useQuery({
     idList: (reading ?? []).map((item) => item.id),
   });
   const { data: wantsToReadBooks } = api.book.listBooksById.useQuery({
     idList: (wantsToRead ?? []).map((item) => item.id),
   });
 
+  if (status === "loading" && (isLoadingBooks || isLoadingReadingBooks)) {
+    return (
+      <LoadingPage />
+    )
+  }
+
   return (
     <main className="h-full min-h-screen bg-ptprimary-500">
-      {isLoading && <LoadingPage />}
       <Header />
       <Navbar />
       {sessionData  ? (

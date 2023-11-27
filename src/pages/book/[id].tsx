@@ -52,7 +52,6 @@ interface BookFormData {
 export default function Book() {
   const [, setSelectedOption] = useState<string>("");
   const [isOpen, setIsOpen] = useState(false);
-  const [loaded, setLoaded] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
   const { data: sessionData } = useSession();
@@ -93,7 +92,7 @@ export default function Book() {
 
   const selectInitialValues = {
     id: savedBook?.id ?? "",
-    listId: savedBook?.listId ?? "",
+    listId: existingLog?.listId ?? savedBook?.listId ?? "",
     userId: savedBook?.userId ?? "",
   };
 
@@ -205,7 +204,6 @@ export default function Book() {
                   width={280}
                   height={500}
                   alt={""}
-                  onLoadingComplete={() => setLoaded(true)}
                 />
                 <div className="flex flex-col items-center mt-5">
                   {existingLog?.rating ? (
