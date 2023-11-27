@@ -43,7 +43,7 @@ export default function Home() {
 
   return (
     <>
-      <main className="h-full bg-ptprimary-500">
+      <main className="h-full min-h-screen bg-ptprimary-500">
         {!newReleasesBooks && !bestSellersBooks && isLoading && <LoadingPage />}
         {isError && <ErrorPage />}
         {bestSellersBooks && newReleasesBooks && (
