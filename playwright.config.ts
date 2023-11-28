@@ -1,5 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const baseURL = 'http://localhost:3000'
+
 export default defineConfig({
   // Look for test files in the "tests" directory, relative to this configuration file.
   testDir: './src/tests/e2e',
@@ -21,7 +23,7 @@ export default defineConfig({
 
   use: {
     // Base URL to use in actions like `await page.goto('/')`.
-    baseURL: 'http://localhost:3000',
+    baseURL: baseURL,
 
     // Collect trace when retrying the failed test.
     trace: 'on-first-retry',
@@ -31,9 +33,13 @@ export default defineConfig({
   },
   // Configure projects for major browsers.
   projects: [
+    // { name: 'setup', testMatch: /.*\.setup\.ts/ },
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { 
+        ...devices['Desktop Chrome'],
+        storageState: 'playwright/.auth/user.json',
+      },
     },
   ],
   // Run your local dev server before starting the tests.
@@ -47,3 +53,5 @@ export default defineConfig({
     timeout: 5000,
   },
 });
+
+export { baseURL }

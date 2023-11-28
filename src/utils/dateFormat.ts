@@ -8,7 +8,6 @@ export function formatBirthday (birthday: Date | undefined | null) {
   
     return `${day} de ${month}`
   }
-
   return `Edite seu perfil para aparecer seu Aniversário!`
 }
 
@@ -19,7 +18,6 @@ export function formatCreatedUserDate(createdAt: Date | undefined) {
 
     return `Entrou em ${month} de ${year}`;
   }
-
   return '';
 }
 
@@ -30,7 +28,6 @@ export function formatAge(birthday: Date | undefined | null) {
 
     return `${age} anos`
   }
-
   return '';
 }
 
@@ -41,6 +38,5 @@ export function formatPublishedDate(publishedDate: string) {
 
     return formatedDate
   }
-
   return '';
 }
