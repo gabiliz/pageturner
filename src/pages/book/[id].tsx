@@ -28,7 +28,7 @@ import { Rating } from "@mui/material";
 import { Progress } from "@nextui-org/react";
 import { Textarea } from "~/components/ui/textarea";
 import { ErrorPage } from "~/components/Error";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useToast } from "~/components/ui/use-toast";
 import { useSession } from "next-auth/react";
 import { Form, Formik } from "formik";
@@ -58,14 +58,16 @@ export default function Book() {
   const id = String(router.query.id);
   const bookCreateMutation = api.book.create.useMutation();
   const bookEditMutation = api.book.update.useMutation();
+  const bookDeleteMutation = api.book.delete.useMutation();
   const logMutation = api.log.createOrUpdateLogWithBook.useMutation();
   const utils = api.useContext();
-  const { data: listsData } = api.list.getAll.useQuery();
+  const { data: listsData, isLoading: isLoadingLists } = api.list.getAll.useQuery();
   const { data: userData } = api.user.getById.useQuery({
     id: sessionData?.user.id ?? "",
   });
-  const { data: savedBook, isFetching } = api.book.getBookById.useQuery({
+  const { data: savedBook, isLoading: isSavedBookLoading } = api.book.getBookById.useQuery({
     id: id,
+    userId: sessionData?.user.id ?? "",
   });
   const {
     data: bookData,
@@ -147,11 +149,25 @@ export default function Book() {
           userId: sessionData.user.id,
         });
       }
-    }
-    if (savedBook) {
-      void utils.book.getBookById.fetch({ id: savedBook.id });
+      if (savedBook) {
+        void utils.book.getBookById.fetch({ id: savedBook.id, userId: sessionData.user.id });
+      }
     }
   };
+
+  const handleDeleteBookSave = () => {
+    if(sessionData) {
+      bookDeleteMutation.mutate({
+        id: bookData.id,
+        userId: sessionData.user.id
+      })
+      toast({
+        variant: "destructive",
+        title: "Livro removido",
+        description: "O livro foi remvido com sucesso!",
+      });
+    }
+  }
 
   const handleSaveLog = (values: LogFormData) => {
     if (sessionData) {
@@ -175,11 +191,14 @@ export default function Book() {
       });
     }
   };
+  useEffect(() => {
+    void utils.list.getAll.fetch()
+  });
 
   return (
     <>
       <div className="h-full min-h-screen bg-ptprimary-500">
-        {isLoading && isFetching && <LoadingPage />}
+        {isLoading && isSavedBookLoading && isLoadingLists && <LoadingPage />}
         {isError && <ErrorPage />}
         {bookData && (
           <>
@@ -429,6 +448,15 @@ export default function Book() {
                         )}
                       </Formik>
                     </>
+                  ) : null}
+                  {savedBook ? (
+                    <Button 
+                      className="w-60 mt-4 text-ptsecondary hover:text-red-600" 
+                      variant='link'
+                      onClick={handleDeleteBookSave}
+                    >
+                      Remover livro
+                    </Button>
                   ) : null}
                 </div>
               </div>

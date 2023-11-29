@@ -57,12 +57,14 @@ export const bookRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
+        userId: z.string(),
       }),
     )
     .query(async ({ input }) => {
       const books = await db.book.findUnique({
         where: {
           id: input.id,
+          userId: input.userId
         },
       });
       return books;

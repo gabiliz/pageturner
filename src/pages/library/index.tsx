@@ -42,7 +42,9 @@ interface Book {
 
 export default function Library() {
   const { data: sessionData, status } = useSession();
-  const { data: booksData, isLoading: isLoadingBooks } = api.book.getAll.useQuery();
+  const { data: booksData, isLoading: isLoadingBooks } = api.book.getAllByUser.useQuery({
+    userId: sessionData?.user.id ?? ""
+  });
   const { data: read } = api.book.getBooksByList.useQuery({
     listId: "lido",
   });
