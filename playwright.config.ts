@@ -30,17 +30,26 @@ export default defineConfig({
 
     // Viewport used for all pages in the context.
     viewport: { width: 1920, height: 1080 },
+
   },
   // Configure projects for major browsers.
   projects: [
-    // { name: 'setup', testMatch: /.*\.setup\.ts/ },
+    { name: 'setup', testMatch: /.*\.setup\.ts/ },
     {
       name: 'chromium',
       use: { 
         ...devices['Desktop Chrome'],
         storageState: 'playwright/.auth/user.json',
       },
+
     },
+    // {
+    //   name: 'firefox',
+    //   use: { 
+    //     ...devices['Desktop Firefox'],
+    //     storageState: 'playwright/.auth/user.json',
+    //   },
+    // },
   ],
   // Run your local dev server before starting the tests.
   webServer: {
