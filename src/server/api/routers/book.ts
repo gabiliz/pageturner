@@ -39,12 +39,14 @@ export const bookRouter = createTRPCRouter({
     .input(
       z.object({
         listId: z.string(),
+        userId: z.string(),
       }),
     )
     .query(async ({ input }) => {
       const bookByList = await db.book.findMany({
         where: {
           listId: input.listId,
+          userId: input.userId
         },
         select: {
           id: true,
@@ -226,5 +228,43 @@ export const bookRouter = createTRPCRouter({
       );
       const bookDetails = await Promise.all(listedBooks);
       return bookDetails;
+    }),
+
+  listBooksByUserId: publicProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+      }),
+    )
+    .query(async ({ input }) => {
+      const { userId } = input;
+
+      const userBookIds = await db.book.findMany({
+        select: {
+          id: true,
+        },
+        where: {
+          userId: userId,
+        },
+      });
+
+      const bookIds = userBookIds.map((book) => book.id);
+
+      const listedBooksFromGoogleBooks = bookIds.map((id) =>
+        fetch(`https://www.googleapis.com/books/v1/volumes/${id}`)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`Failed to fetch details for ID ${id}`);
+            }
+            return response.json();
+          })
+          .catch((error) => ({
+            error: `Failed to fetch details for ID ${id}, Error: ${error}`,
+          })),
+      );
+
+      const booksFromGoogleBooks = await Promise.all(listedBooksFromGoogleBooks);
+
+      return booksFromGoogleBooks;
     }),
 });

@@ -331,9 +331,13 @@ export default function Profile() {
                 <h2 className="text-xl font-semibold text-ptsecondary">
                   Detalhes
                 </h2>
-                <p className="text-lg text-ptsecondary">
-                  {formatAge(userData.birthday)}, {userData.pronouns}
-                </p>
+                  {!userData.birthday && !userData.pronouns ? (
+                    <p className="text-lg text-ptsecondary">Edite seu perfil para aparecer os detalhes!</p>
+                  ): (
+                    <p className="text-lg text-ptsecondary">
+                      {formatAge(userData.birthday)}, {userData.pronouns}
+                    </p>
+                  )}
               </div>
               <div className="my-8 h-[3px] w-[800px] bg-ptprimary-900"></div>
               <div className="grid sm:grid-cols-2 grid-cols-1">

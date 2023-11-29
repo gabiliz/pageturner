@@ -47,12 +47,15 @@ export default function Library() {
   });
   const { data: read } = api.book.getBooksByList.useQuery({
     listId: "lido",
+    userId: sessionData?.user.id ?? ""
   });
   const { data: reading } = api.book.getBooksByList.useQuery({
     listId: "lendo",
+    userId: sessionData?.user.id ?? ""
   });
   const { data: wantsToRead } = api.book.getBooksByList.useQuery({
     listId: "pretendo-ler",
+    userId: sessionData?.user.id ?? ""
   });
   const { data: readBooks } = api.book.listBooksById.useQuery({
     idList: (read ?? []).map((item) => item.id),
