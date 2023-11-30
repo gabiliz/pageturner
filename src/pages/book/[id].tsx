@@ -341,7 +341,6 @@ export default function Book() {
                                                   "listId",
                                                   value,
                                                 );
-                                                void props.submitForm();
                                               }}
                                               value={props.values.listId}
                                             >
