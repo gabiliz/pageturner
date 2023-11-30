@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import BookCard from "~/components/BookCard";
 import CardCarousel from "~/components/CardCarousel";
 import { ErrorPage } from "~/components/Error";

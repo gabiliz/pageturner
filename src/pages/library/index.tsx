@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { useSession } from "next-auth/react";
 import BookCard from "~/components/BookCard";
 import Header from "~/components/Header";
