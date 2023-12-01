@@ -36,7 +36,7 @@ export default function BookCard({
           width={0}
           height={0}
           sizes="100vw"
-          alt={""}
+          alt={"book-image"}
           style={{ width: "100%", height: "auto" }}
         />
         <div className="relative flex flex-col pt-6">
