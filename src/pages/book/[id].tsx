@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -26,7 +27,7 @@ import { Rating } from "@mui/material";
 import { Progress } from "@nextui-org/react";
 import { Textarea } from "~/components/ui/textarea";
 import { ErrorPage } from "~/components/Error";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useState } from "react";
 import { useToast } from "~/components/ui/use-toast";
 import { useSession } from "next-auth/react";
 import { Form, Formik } from "formik";
@@ -54,16 +55,16 @@ export default function Book() {
   const router = useRouter();
   const { data: sessionData } = useSession();
   const id = String(router.query.id);
-  const bookCreateMutation = api.book.create.useMutation();
-  const bookEditMutation = api.book.update.useMutation();
-  const bookDeleteMutation = api.book.delete.useMutation();
-  const logMutation = api.log.createOrUpdateLogWithBook.useMutation();
-  const utils = api.useContext();
-  const { data: listsData, isLoading: isLoadingLists } = api.list.getAll.useQuery();
+  const { mutateAsync: bookCreateMutation } = api.book.create.useMutation();
+  const { mutateAsync: bookEditMutation } = api.book.update.useMutation();
+  // const bookDeleteMutation = api.book.delete.useMutation();
+  const { mutateAsync: bookDeleteMutation } = api.book.delete.useMutation();
+  const { mutateAsync: logMutation } = api.log.createOrUpdateLogWithBook.useMutation();
+  const { data: listsData, isLoading: isLoadingLists, refetch: refetchList } = api.list.getAll.useQuery();
   const { data: userData } = api.user.getById.useQuery({
     id: sessionData?.user.id ?? "",
   });
-  const { data: savedBook, isLoading: isSavedBookLoading } = api.book.getBookById.useQuery({
+  const { data: savedBook, isLoading: isSavedBookLoading, refetch: refetchBook } = api.book.getBookById.useQuery({
     id: id,
     userId: sessionData?.user.id ?? "",
   });
@@ -75,7 +76,7 @@ export default function Book() {
     id: id,
   });
 
-  const { data: existingLog } = api.log.getByBookAndUserId.useQuery({
+  const { data: existingLog, refetch: refetchLog } = api.log.getByBookAndUserId.useQuery({
     userId: userData?.id !== undefined ? userData.id : "",
     bookId: bookData?.id,
   });
@@ -130,32 +131,31 @@ export default function Book() {
     setIsOpen(true);
   };
 
-  const handleSelectChange = (values: BookFormData) => {
+  const handleSelectChange = async (values: BookFormData) => {
     setSelectedOption(values.listId);
 
     if (sessionData) {
       if (allBooks?.find((book) => book.id === bookData.id)) {
-        bookEditMutation.mutate({
+        await bookEditMutation({
           listId: values.listId,
           id: bookData.id,
           userId: sessionData.user.id,
         });
       } else {
-        bookCreateMutation.mutate({
+        await bookCreateMutation({
           listId: values.listId,
           id: bookData.id,
           userId: sessionData.user.id,
         });
       }
-      if (savedBook) {
-        void utils.book.getBookById.fetch({ id: savedBook.id, userId: sessionData.user.id });
-      }
+     await refetchBook()
+     await refetchList()
     }
   };
 
-  const handleDeleteBookSave = () => {
+  const handleDeleteBookSave = async () => {
     if(sessionData) {
-      bookDeleteMutation.mutate({
+      await bookDeleteMutation({
         id: bookData.id,
         userId: sessionData.user.id
       })
@@ -164,12 +164,15 @@ export default function Book() {
         title: "Livro removido",
         description: "O livro foi remvido com sucesso!",
       });
+      await refetchBook()
+      await refetchList()
+      await refetchLog()
     }
   }
 
-  const handleSaveLog = (values: LogFormData) => {
+  const handleSaveLog = async (values: LogFormData) => {
     if (sessionData) {
-      logMutation.mutate({
+      await logMutation({
         listId: values.listId,
         userId: sessionData.user.id,
         bookId: bookData.id,
@@ -183,15 +186,10 @@ export default function Book() {
         description: "Seu registro foi salvo com sucesso!",
       });
       setIsOpen(false);
-      void utils.log.getByBookAndUserId.fetch({
-        userId: sessionData.user.id,
-        bookId: bookData.id,
-      });
+      await refetchLog()
+      await refetchList()
     }
   };
-  useEffect(() => {
-    void utils.list.getAll.fetch()
-  });
 
   return (
     <>
