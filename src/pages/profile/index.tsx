@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { Dialog, Transition } from "@headlessui/react";
 import {
   ChevronLeftIcon,
@@ -5,7 +6,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { Form, Formik } from "formik";
 import { useSession } from "next-auth/react";
-import React, { type ComponentType, Fragment, useState } from "react";
+import React,  { Fragment, useState } from "react";
 import DatePicker from "tailwind-datepicker-react";
 import { ErrorPage } from "~/components/Error";
 import Header from "~/components/Header";
@@ -24,12 +25,7 @@ import {
 } from "~/utils/dateFormat";
 import * as Yup from "yup";
 import { type IOptions } from "tailwind-datepicker-react/types/Options";
-import dynamic from "next/dynamic";
-
-const DynamicUserSessionPage = dynamic(
-  () => import('../../components/UserSession').then((module) => module.UserSessionPage) as Promise<ComponentType<object>>,
-  { loading: () => <LoadingPage /> }
-);
+import { UserSessionPage } from "../../components/UserSession";
 
 interface UserFormData {
   name: string;
@@ -85,6 +81,7 @@ export default function Profile() {
     data: userData,
     isLoading: isLoadingUser,
     isError,
+    refetch
   } = api.user.getById.useQuery({
     id: sessionData?.user.id ?? "",
   });
@@ -96,8 +93,7 @@ export default function Profile() {
     userId: userData?.id !== undefined ? userData.id : "",
   })
 
-  const mutation = api.user.update.useMutation();
-  const utils = api.useContext()
+  const {mutateAsync: updateUser} = api.user.update.useMutation();
 
   const initialValues = {
     id: userData?.id ?? "",
@@ -141,9 +137,9 @@ export default function Profile() {
     setShow(state);
   };
 
-  const handleSaveUser = (values: UserFormData) => {
+  const handleSaveUser = async (values: UserFormData) => {
     if (userData) {
-      mutation.mutate({
+      await updateUser({
         id: userData.id,
         name: values.name,
         pronouns: values.pronouns,
@@ -155,7 +151,7 @@ export default function Profile() {
         description: "Sua alteração foi salva com sucesso!",
       });
       setIsOpen(false);
-      void utils.user.getById.fetch({id: userData.id})
+      await refetch()
     }
   };
 
@@ -163,11 +159,15 @@ export default function Profile() {
     return <LoadingPage />
   }
 
+  if (status === 'unauthenticated') {
+    <UserSessionPage />
+  }
+
   return (
     <>
       <div className="h-full min-h-screen bg-ptprimary-500">
         {isError && <ErrorPage />}
-        {userData && sessionData ? (
+        {userData && status === 'authenticated' && (
           <>
             <Header />
             <div className="mt-11 grid justify-center">
@@ -356,11 +356,7 @@ export default function Profile() {
             </div>
             <Toaster />
           </>
-        ) : 
-        <div>
-          <DynamicUserSessionPage />
-        </div>
-        }
+        )}
       </div>
     </>
   );
